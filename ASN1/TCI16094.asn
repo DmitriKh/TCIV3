@@ -3,6 +3,7 @@ DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
+dsrcMtu,
 Response, 
 Exception, 
 MsgID FROM TCI-CommonTypes
@@ -116,16 +117,16 @@ Dot4SetWsmTxInfo ::= SetWsmTxInfo (WITH COMPONENTS {
     psid,
     radio,
     security,
-    channelIdentifier,
-    timeslot,
-    dataRate,
     transmitPowerLevel,
     infoElementsIncluded,
     userPriority,
-    destinationMACAddr ('FFFFFFFFFFFF'H),
-    expiryTime  ABSENT,
-    channelLoad ABSENT,
+    channelIdentifier,
+    dataRate,
+    timeslot,
     repeatRate ABSENT,
+    destinationMACAddr ('FFFFFFFFFFFF'H),
+    channelLoad ABSENT,
+    expiryTime  ABSENT,
     payload ABSENT
 })
 
@@ -133,7 +134,7 @@ Dot4StartWsmTx ::= StartWsmTx (WITH COMPONENTS {
     psid,
     radio,
     repeatRate,
-    payload PRESENT
+    payload(SIZE(0..dsrcMtu)) PRESENT
 })
 
 /* 

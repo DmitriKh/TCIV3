@@ -39,9 +39,9 @@ Indication ::= SEQUENCE{
 }
 
 Event ::= ENUMERATED {
-	e80211PktRx							(1),	-- set 1 to be notified when 802.11 frame is received
-	e16093PktRx							(2), 	-- inbound 1603 frame received
-	eWsmPktRx							(3), 	-- WSM received (after PSID match filtering)
+	e80211PktRx							(1),	-- used for 802.11 frames or PC5 Mac frames
+	e16093PktRx							(2), 	-- inbound 1603 frame received (before PSID filtering)
+	eWsmPktRx							(3), 	-- WSM received (after PSID match _AND_ filter based on pduFingerPrint (if present))
 	eIpv6PktRx							(4), 	-- inbound IPv6 frame received
 	eIcmp6PktRx							(5),	-- inbound ICMP frame received
 	eIpv6ConfigChanged					(6),	-- IPv6 address configuration changed
@@ -72,15 +72,16 @@ ServiceParameters ::= SEQUENCE{ -- used in EventParams
 }
 
 WsmParameters ::= SEQUENCE{	-- used in EventParams			
-	psid					Psid,
 	radio					RadioInterface ( WITH COMPONENTS { ..., antenna ABSENT }),
+	psid					Psid,
 	wsmpVersion				INTEGER(0..15),
-	channelIdentifier		ChannelNumber80211,
-	-- timeslot				TimeSlot,               //ELIMINATED due to CR implementation
-	dataRate				DataRate80211,
-	receivePowerLevel		TXpower80211,
-	sourceMACAddr			MACaddress,
-	...
+	channelIdentifier		ChannelNumber80211 OPTIONAL,
+	dataRate				DataRate80211 OPTIONAL,
+	receivePowerLevel		TXpower80211 OPTIONAL,
+	sourceMACAddr			MACaddress OPTIONAL,
+	...,
+    -- ADD other PC5 parameters
+    rssi 					RCPI OPTIONAL
 }
 
 IpParameters ::= SEQUENCE{ -- used in EventParams
@@ -103,41 +104,42 @@ SecResultParams ::= SEQUENCE { -- used in EventParams
 } 
 
 SecurityResultCode ::= ENUMERATED {		-- from dot3
-	success(1), 
-	inconsistentInputParameters(2), 
-	spduParsingInvalidInput(3), 
-	spduParsingUnsupportedCriticalInformationField(4),
-	spduParsingCertificateNotFound(5), 
-	spduParsingGenerationTimeNotAvailable(6), 
-	spduParsingGenerationLocationNotAvailable(7), 
-	spduCertificateChainNotEnoughInformationToConstructChain(8), 
-	spduCertificateChainChainEndedAtUntrustedRoot(9), 
-	spduCertificateChainChainWasTooLongForImplementation(10), 
-	spduCertificateChainCertificateRevoked(11), 
-	spduCertificateChainOverdueCRL(12), 
-	spduCertificateChainInconsistentExpiryTimes(13), 
-	spduCertificateChainInconsistentStartTimes(14), 
-	spduCertificateChainInconsistentChainPermissions(15), 
-	spduCryptoVerificationFailure(16), 
-	spduConsistencyFutureCertificateAtGenerationTime(17), 
-	spduConsistencyExpiredCertificateAtGenerationTime(18), 
-	spduConsistencyExpiryDateTooEarly(19), 
-	spduConsistencyExpiryDateTooLate(20), 
-	spduConsistencyGenerationLocationOutsideValidityRegion(21), 
-	spduConsistencyNoGenerationLocation(22), 
-	spduConsistencyUnauthorizedPSID(23), 
-	spduInternalConsistencyExpiryTimeBeforeGenerationTime(24), 
-	spduInternalConsistencyextDataHashDoesntMatch(25), 
-	spduInternalConsistencynoExtDataHashProvided(26), 
-	spduInternalConsistencynoExtDataHashPresent(27), 
-	spduLocalConsistencyPSIDsDontMatch(28), 
-	spduLocalConsistencyChainWasTooLongForSDEE(29), 
-	spduRelevanceGenerationTimeTooFarInPast(30), 
-	spduRelevanceGenerationTimeTooFarInFuture(31), 
-	spduRelevanceExpiryTimeInPast(32), 
-	spduRelevanceGenerationLocationTooDistant(33), 
-	spduRelevanceReplayedSpdu(34),
-	spduCertificateExpired (35)
+	success (1),
+	inconsistentInputParameters (2),
+	spduParsingInvalidInput (3),
+	spduParsingUnsupportedCriticalInformationField (4),
+	spduParsingCertificateNotFound (5),
+	spduParsingGenerationTimeNotAvailable (6),
+	spduParsingGenerationLocationNotAvailable (7),
+	spduCertificateChainNotEnoughInformationToConstructChain (8),
+	spduCertificateChainChainEndedAtUntrustedRoot (9),
+	spduCertificateChainChainWasTooLongForImplementation (10),
+	spduCertificateChainCertificateRevoked (11),
+	spduCertificateChainOverdueCRL (12),
+	spduCertificateChainInconsistentExpiryTimes (13),
+	spduCertificateChainInconsistentStartTimes (14),
+	spduCertificateChainInconsistentChainPermissions (15),
+	spduCryptoVerificationFailure (16),
+	spduConsistencyFutureCertificateAtGenerationTime (17),
+	spduConsistencyExpiredCertificateAtGenerationTime (18),
+	spduConsistencyExpiryDateTooEarly (19),
+	spduConsistencyExpiryDateTooLate (20),
+	spduConsistencyGenerationLocationOutsideValidityRegion (21),
+	spduConsistencyNoGenerationLocation (22),
+	spduConsistencyUnauthorizedPSID (23),
+	spduInternalConsistencyExpiryTimeBeforeGenerationTime (24),
+	spduInternalConsistencyextDataHashDoesntMatch (25),
+	spduInternalConsistencynoExtDataHashProvided (26),
+	spduInternalConsistencynoExtDataHashPresent (27),
+	spduLocalConsistencyPSIDsDontMatch (28),
+	spduLocalConsistencyChainWasTooLongForSDEE (29),
+	spduRelevanceGenerationTimeTooFarInPast (30),
+	spduRelevanceGenerationTimeTooFarInFuture (31),
+	spduRelevanceExpiryTimeInPast (32),
+	spduRelevanceGenerationLocationTooDistant (33),
+	spduRelevanceReplayedSpdu (34),
+	spduRelevanceCertificateExpired (35),
+	spduCertificateChainInconsistentValidityRegion (36)
 }
 
 END

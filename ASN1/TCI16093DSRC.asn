@@ -1,9 +1,10 @@
 --OSS.PDU TCI-16093.TSI16093Event>--
-TCI-16093
+TCI-16093-DSRC
 DEFINITIONS AUTOMATIC TAGS ::= 
 BEGIN
 
 IMPORTS
+dsrcMtu,
 Exception,
 Response, 
 MsgID FROM TCI-CommonTypes
@@ -33,7 +34,7 @@ Indication FROM TCI-indication
 
 ;
 
-TCI16093 ::= CHOICE{
+TCI16093DSRC ::= CHOICE{
 	request			[0]	Request,
 	response		[1]	Response,
 	indication 		[2] Dot3Indication,
@@ -61,7 +62,7 @@ MessageTypes MESSAGE-ID-AND-TYPE ::= {
 	{ StopWsmTx IDENTIFIED BY stopWsmTx} |
 	{ StartWsaTxPerdiodic IDENTIFIED BY startWsaTxPerdiodic} |
 	{ StopWsaTxPeriodic IDENTIFIED BY stopWsaTxPeriodic} |
-	{ StartWsmRx IDENTIFIED BY startWsmRx} |
+	{ Dot3StartWsmRx IDENTIFIED BY startWsmRx} |
 	{ StopWsmRx IDENTIFIED BY stopWsmRx} |
 	{ AddWsaProviderService IDENTIFIED BY addWsaProviderService} |
 	{ ChangeWsaProviderService IDENTIFIED BY changeWsaProviderService} |
@@ -116,16 +117,16 @@ Dot3SetWsmTxInfo ::= SetWsmTxInfo (WITH COMPONENTS {
 	psid,
 	radio,
 	security,
-	channelIdentifier,
-	timeslot,
-	dataRate,
 	transmitPowerLevel,
 	infoElementsIncluded,
 	userPriority,
-	destinationMACAddr ('FFFFFFFFFFFF'H),
-	expiryTime	ABSENT,
-	channelLoad	ABSENT,
+	channelIdentifier,
+	dataRate,
+	timeslot,
 	repeatRate ABSENT,
+	destinationMACAddr ('FFFFFFFFFFFF'H),
+	channelLoad	ABSENT,
+	expiryTime	ABSENT,
 	payload ABSENT
 })
 
@@ -133,7 +134,16 @@ Dot3StartWsmTx ::= StartWsmTx (WITH COMPONENTS {
 	psid,
 	radio,
 	repeatRate,
-	payload	PRESENT
+	payload(SIZE(0..dsrcMtu)) PRESENT
+})
+
+Dot3StartWsmRx ::= StartWsmRx (WITH COMPONENTS {
+	psid OPTIONAL,
+	radio,
+    channelIdentifier,
+    timeSlot,
+    eventHandling,
+    pduFingerPrint OPTIONAL
 })
 
 /* 

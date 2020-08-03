@@ -11,6 +11,7 @@ ChannelNumber80211,
 IPv6Address, 
 ServicePort FROM IEEE-1609-3-WEE {iso(1) identified-organization(3) ieee(111) standards-association-numbered-series-standards(2) wave-stds(1609) dot3(3) wee(1) version0(0)}
 
+ipMtu,
 TimeSlot,
 RepeatRate, 
 Opaque, 
@@ -59,7 +60,7 @@ IPv6TxRecord ::= SEQUENCE{
     protocol            ENUMERATED { tcp, udp, icmp },
     repeatRate          RepeatRate OPTIONAL,
     eventHandling       EventHandling  (WITH COMPONENTS {..., eventFlag }) OPTIONAL,
-    payload             Opaque OPTIONAL,
+    payload             Opaque(SIZE(0..ipMtu)) OPTIONAL,
     ...
 }
 

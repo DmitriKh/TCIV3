@@ -10,7 +10,8 @@ ResultCode,
 MsgID, 
 Exception, 
 RadioInterface, 
---IpAddress, 
+--IpAddress,
+tciMtu,
 Opaque FROM TCI-CommonTypes
 ;
 
@@ -25,7 +26,10 @@ ResponseInfo ::= SEQUENCE {
 InfoContent::= CHOICE {
     ipv6InterfaceInfo   [1] Ipv6InterfaceInfo,
     sutInfo             [2] SutInfo,
-    ...
+    ...,
+    atCmdInfo			[3] ATcmdInfo,
+    pktCount		 	[4] PacketCount,
+	sutStatus			[5] SutStatus
 }
 
 /*
@@ -48,6 +52,9 @@ SutInfo ::= SEQUENCE {
     ...
 }
 
+SutStatus ::= Opaque(SIZE(0..tciMtu))  -- to query device for Timing Confidence, to check position lock, to get UE parameters and verify against expected values
+			-- Format to be define
+
 VersionInfoBlock ::= SEQUENCE OF SEQUENCE {
     componentType   INTEGER {            -- type of the component, which version is reported
                         hardware    (0),    -- overall device hardware revision
@@ -61,5 +68,9 @@ VersionInfoBlock ::= SEQUENCE OF SEQUENCE {
     description     UTF8String(SIZE(1..100)) OPTIONAL,   -- description of the component, e.g. BSM protocol stack
     ...
 }
+
+ATcmdInfo ::= UTF8String(SIZE(1..tciMtu))
+PacketCount ::= INTEGER(0..9223372036854775807)
+
 
 END

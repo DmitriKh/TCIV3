@@ -39,26 +39,28 @@ SetWsmTxInfo ::= SEQUENCE{      -- handled through WSM-WaveShortMessage.request,
     psid                    Psid,
     radio                   RadioInterface,
     security                SecurityContext,
-    channelIdentifier       ChannelNumber80211,
-    timeslot                TimeSlot,
-    dataRate                DataRate80211,
     transmitPowerLevel      TXpower80211,
     infoElementsIncluded    WaveElementsIncluded DEFAULT '000000000000000000000000'B, -- default no WAVE Extension Info elements included
-    userPriority            UserPriority,
-    destinationMACAddr      MACaddress  DEFAULT 'FFFFFFFFFFFF'H,
-    expiryTime              Time64 OPTIONAL,
-    channelLoad             Opaque OPTIONAL,
+    userPriority            UserPriority OPTIONAL,
+    channelIdentifier       ChannelNumber80211 OPTIONAL,
+    dataRate                DataRate80211 OPTIONAL,
+    timeslot                TimeSlot OPTIONAL,
     repeatRate              RepeatRate  OPTIONAL, -- when set to 0 - one shot message, otherwise periodic with RepeatRate per 1609.3
+    destinationMACAddr      MACaddress  OPTIONAL,
+    channelLoad             Opaque OPTIONAL,
+    expiryTime              Time64 OPTIONAL,
     payload                 Opaque OPTIONAL,
     ...
 }
+
+
 -- For sending WSMs use SetWsmTxInfo, then StartWsmTx
 -- For sending WSAs use StartWsaTxPerdiodic 
 
 StartWsmTx ::= SEQUENCE{  -- handled through WSM-WaveShortMessage.request
     psid            Psid,
     radio           RadioInterface,
-    repeatRate      RepeatRate, -- when set to 0 - one shot message, otherwise periodic with RepeatRate per 1609.3
+    repeatRate      RepeatRate OPTIONAL, -- when set to 0 - one shot message, otherwise periodic with RepeatRate per 1609.3, not used for StartBsmTx
     payload         Opaque OPTIONAL,
     ...
 }
@@ -69,13 +71,14 @@ StopWsmTx ::= SEQUENCE{
     ...
 }
 
-StartWsmRx ::= SEQUENCE{    -- uses on WME-WSMService.request; WME-ChannelService used for received WSM on the given channel timeslot with matched PSIDs
+StartWsmRx ::= SEQUENCE{    -- request to received WSM with matched PSIDs and provide indications
     psid                Psid OPTIONAL, -- PSID is optional if eventHandling.rxFlag is set to receive any WSM with PSID
     radio               RadioInterface,
-    channelIdentifier   ChannelNumber80211,
-    timeSlot            TimeSlot,
+    channelIdentifier   ChannelNumber80211 OPTIONAL, -- not used for PC5
+    timeSlot            TimeSlot OPTIONAL,           -- not used for PC5
     eventHandling       EventHandling,
-    ...
+    ...,
+	pduFingerPrint		OCTET STRING(SIZE(0..4)) OPTIONAL  -- unique octets to be included at the beginning of payload and be used for packet filtering
 }
 
 StopWsmRx ::= SEQUENCE{
@@ -155,6 +158,12 @@ DelUserService ::= SEQUENCE{
     radio                   RadioInterface,
     ...
 }
+
+RequestWsmTxCount ::= BOOLEAN (TRUE)      -- Request count of WSM packets Tx by SUT 
+RequestWsmTxCountReset ::= BOOLEAN (TRUE) -- Reset count of WSM Tx packets
+
+RequestWsmRxCount ::= BOOLEAN (TRUE)      -- Request count of WSM packets Rx by SUT after PSID filter and match to pduFingerPrint
+RequestWsmRxCountReset ::= BOOLEAN (TRUE) -- Reset count of WSM Rx packets
 
 /*
    Data Types
