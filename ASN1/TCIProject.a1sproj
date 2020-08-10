@@ -1,4 +1,4 @@
-<OssGuiProject version="2.0" productVersion="9.0.1" product="ASN.1 Studio">
+<OssGuiProject version="2.0" product="ASN.1 Studio" productVersion="9.0.1">
  <Asn1Files>
   <File>TCIDispatcher.asn</File>
   <File>TCI29451.asn</File>
@@ -16,13 +16,16 @@
   <File>1609dot3/wsa.asn</File>
   <File>TCI16093DSRC.asn</File>
   <File>TCI16093PC5.asn</File>
+  <File>1609dot3/EUTRA-RRC-Definitions.asn</File>
+  <File>1609dot3/EUTRA-Sidelink-Preconf.asn</File>
+  <File>TCI31611.asn</File>
  </Asn1Files>
  <CompilerSettings/>
  <EncodingFiles>
-  <File encRule="ASN.1 Value Notation" pduName="TCIMsg">TCI-dot3-req-Dot3SetWsmTxInfo.txt</File>
+  <File pduName="TCIMsg" encRule="ASN.1 Value Notation">TCI-dot3-req-Dot3SetWsmTxInfo.txt</File>
  </EncodingFiles>
  <Settings>
-  <Setting name="-noRelaxedMode" present="false"/>
+  <Setting present="false" name="-noRelaxedMode"/>
   <Setting name="-oer"/>
   <Setting name="-root"/>
   <Setting name="AUTOMATIC_ENCDEC"/>

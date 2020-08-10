@@ -8,6 +8,16 @@ Proper syntax and correct mapping of UPER on the intended binary presentation as
 */
 
 IMPORTS
+  ARFCN-ValueEUTRA-r9,
+  P-Max,
+  SL-Priority-r13,
+  SL-TxPoolIdentity-r12
+FROM EUTRA-RRC-Definitions 
+
+  SL-V2X-Preconfiguration-r14 
+FROM EUTRA-Sidelink-Preconf
+
+VarLengthNumber FROM CITSapplMgmtIDs {iso(1) standard(0) cits-applMgmt (17419) ids (1) version1 (1)} 
 
 ;
 
@@ -52,7 +62,9 @@ c-ChannelLoad   RefExt ::= 23 -- WSM-N-Header.
 -- ChannelLoad is not specified in this standard.
 -- reserved for ISO RefExt in the range 80 to 120
 -- all other values of RefExt are reserved
-
+c-ProtocolType             RefExt ::= 24 -- Service Announcements
+c-CompactTimeConfidence    RefExt ::= 25 -- WSM-N-Header
+c-ExtendedChannelInfos     RefExt ::= 84 -- WSA Extended Channel Infos
 
 -- WSM extension elements
 
@@ -62,6 +74,7 @@ TXpower80211::=INTEGER(-128..127)
 
 ChannelNumber80211::=INTEGER(0..255)
 
+CompactTimeConfidence ::= INTEGER (0..255)
 
 --WSA message header extension elements
 
@@ -82,6 +95,40 @@ ThreeDLocation ::= SEQUENCE {
 -- The 32 characters may produce more than 32 octets in UPER
 AdvertiserIdentifier ::= UTF8String (SIZE (1..32))
 
+LTEv2xChannelInfo ::= SEQUENCE {
+  -- Channel identifier and Transmit parameters
+  
+  txPoolEarfcn    ARFCN-ValueEUTRA-r9 OPTIONAL,
+  pMax            P-Max OPTIONAL,
+  pppp            SL-Priority-r13 OPTIONAL,
+  txPool          SL-TxPoolIdentity-r12 OPTIONAL,
+  minMcs          INTEGER (0..31) OPTIONAL,
+  maxMcs          INTEGER (0..31) OPTIONAL,
+  minPdb          INTEGER (0..1023) OPTIONAL,
+  -- Traffic limiting
+  mtu             INTEGER (1..8192) OPTIONAL,
+  maxBwPerSec     MaxBandwidthPerSec OPTIONAL,
+  minPeriodicity  MinimumTrafficPeriodicity OPTIONAL,
+  -- Operational parameters
+  maxSpeed        INTEGER (0..255) OPTIONAL,
+  maxRange        INTEGER (1..4096) OPTIONAL,
+  maxCbr          INTEGER (0..100) OPTIONAL,
+  -- Preconfiguration
+  preconfigInfo   SL-V2X-Preconfiguration-r14 OPTIONAL,
+  ...
+}
+
+MaxBandwidthPerSec ::= SEQUENCE {
+  number INTEGER (1..1000),
+  multiplier ENUMERATED {bytes, kb, mb, gb, ...}
+} 
+
+MinimumTrafficPeriodicity ::= ENUMERATED {
+  sf20, sf50, sf100, sf200, sf300, sf400, sf500,
+  sf600, sf700, sf800, sf900, sf1000
+}
+
+ProtocolType ::= VarLengthNumber
 
 --ServiceInfo extension elements
 -- Note: The size constraint has to be (0..255) although the PSC may
@@ -125,14 +172,13 @@ EdcaParameterRecord ::= SEQUENCE {
     ecwMax  INTEGER (0..15),    -- ecwMax is the exponent in CWmax = 2^ecwMax-1
     ecwMin  INTEGER (0..15),
     txopLimit   INTEGER (0..65535)
-    }
+}
 
 ChannelAccess80211 ::= INTEGER {
-    continuous  (0),
-    alternatingSCH  (1),
-    alternatingCCH  (2)
+	continuous	(0),
+	alternatingTimeSlot0	(1),
+	alternatingTimeSlot1	(2)
 } (0..255)
-
 
 --RoutingAdvertisement extension elements
 

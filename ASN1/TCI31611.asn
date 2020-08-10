@@ -1,11 +1,5 @@
---Purpose: Exercise J2945/1 compliant devices by testing the transmission of all possible BSM configurations,
---         Assist J2945/1 testing by providing easy access to VehicleEventFlags, 
---         Assist J2945/1 testing by toggling required but test-interfering aspects of the IUT (GPS, Congestion Control, BSM Transmission). 
---         This ASN file IS NOT INTENDED to replace in-vehicle testing
-
---Notes: All value bounds in this document are taken directly from the SAE J2735-2016 standard. Information on the rationale and units of the values can be found in the J2735 standards.
-
-TCI-29451
+--Purpose: Exercise J3161/1 compliant devices by testing the transmission of all possible BSM configurations,
+TCI-31611
 
 DEFINITIONS AUTOMATIC TAGS ::= 
 BEGIN
@@ -34,12 +28,14 @@ SetSpeed,
 SetHeading, 
 SetAccelerationSet4Way, 
 SetGpsTime  FROM TCI-SutControl
+
+SetUeConfig FROM TCI-16093-PC5
 ;
 
-TCI29451 ::= CHOICE{
+TCI31611 ::= CHOICE{
     request         [0] Request,
     response        [1] Response,
-    indication      [2] D2945Indication,
+    indication      [2] D31611Indication,
 --  responseInfo    [3] ResponseInfo,
     exception       [4] Exception,
     ...
@@ -60,6 +56,7 @@ MessageTypes MESSAGE-ID-AND-TYPE ::= {
     { SetInitialState IDENTIFIED BY setInitialState} |
     { StartBsmTx IDENTIFIED BY startBsmTx} |
     { StopBsmTx IDENTIFIED BY stopBsmTx} |
+    { SetUeConfig IDENTIFIED BY setUeConfig} |
     { EnableCongestionMitigation IDENTIFIED BY enableCongestionMitigation} |
 
     { SetTemporaryID IDENTIFIED BY setTemporaryID} |
@@ -78,7 +75,8 @@ startBsmTx                          MsgID ::= 2
 stopBsmTx                           MsgID ::= 3
 startBsmRx                          MsgID ::= 4
 stopBsmRx                           MsgID ::= 5
-enableCongestionMitigation          MsgID ::= 6
+setUeConfig							MsgID ::= 6
+enableCongestionMitigation          MsgID ::= 9
 
 setTemporaryID                      MsgID ::= 10
 setTransmissionState                MsgID ::= 11
@@ -102,8 +100,8 @@ StopBsmTx ::= StopWsmTx (WITH COMPONENTS {
 StartBsmRx ::= StartWsmRx (WITH COMPONENTS {
     psid   (WITH COMPONENTS {content    (32)}), -- PSID is optional if eventHandling.rxFlag is set to receive any WSM with PSID
     radio ( WITH COMPONENTS { ..., antenna ABSENT }),
-    channelIdentifier (172),        -- default value for BSM
-    timeSlot (continuous),          -- default value for BSM
+    channelIdentifier ABSENT,        -- default value for BSM
+    timeSlot ABSENT,          -- default value for BSM
     eventHandling
     })
 
@@ -206,7 +204,7 @@ SetExteriorLights ::= BIT STRING
    Indication Messages
 */
 
-D2945Indication ::= Indication (WITH COMPONENTS {
+D31611Indication ::= Indication (WITH COMPONENTS {
     radio,
     event ( eWsmPktRx |
         exception),

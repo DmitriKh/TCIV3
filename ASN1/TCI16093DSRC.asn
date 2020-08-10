@@ -60,7 +60,7 @@ MessageTypes MESSAGE-ID-AND-TYPE ::= {
 	{ Dot3SetWsmTxInfo IDENTIFIED BY setWsmTxInfo} |
 	{ Dot3StartWsmTx IDENTIFIED BY startWsmTx} |
 	{ StopWsmTx IDENTIFIED BY stopWsmTx} |
-	{ StartWsaTxPerdiodic IDENTIFIED BY startWsaTxPerdiodic} |
+	{ Dot3StartWsaTxPerdiodic IDENTIFIED BY startWsaTxPerdiodic} |
 	{ StopWsaTxPeriodic IDENTIFIED BY stopWsaTxPeriodic} |
 	{ Dot3StartWsmRx IDENTIFIED BY startWsmRx} |
 	{ StopWsmRx IDENTIFIED BY stopWsmRx} |
@@ -98,8 +98,8 @@ stopIpv6Ping							MsgID ::= 17
     Request Messages
 
 	SetInitialState, 
---	SetWsmTxInfo, 
---	StartWsmTx, 
+	SetWsmTxInfo, 
+	StartWsmTx, 
 	StopWsmTx, 
 	StartWsmRx, 
 	StopWsmRx, 
@@ -146,6 +146,28 @@ Dot3StartWsmRx ::= StartWsmRx (WITH COMPONENTS {
     pduFingerPrint OPTIONAL
 })
 
+ 
+Dot3StartWsaTxPerdiodic ::= StartWsaTxPerdiodic (WITH COMPONENTS {
+    radio,
+    destinationMACAddr ('FFFFFFFFFFFF'H),
+    wsaChannelIdentifier,
+    channelAccess,
+    repeatRate,
+    ipService,
+    security,                
+    signatureLifetime,
+    infoElementIncluded,
+    advertiserId OPTIONAL,
+	headerExts OPTIONAL,
+    serviceInfos,
+    channelinfos,
+    wra OPTIONAL,
+    -- if the following parameters omitted, use the default values from the SUT MIB
+    dataRate OPTIONAL,
+    userPriority OPTIONAL, 
+    transmitPowerLevel OPTIONAL
+})
+
 /* 
    Indication Messages
 */
@@ -177,7 +199,9 @@ Dot3Indication ::= Indication (WITH COMPONENTS {
 Dot3ResponseInfo ::= ResponseInfo (WITH COMPONENTS {
 	msgID,	
 	resultCode,
-	info (WITH COMPONENTS {ipv6InterfaceInfo}  ) OPTIONAL, -- if exception reported, no InfoContent provided
+	info (WITH COMPONENTS {ipv6InterfaceInfo} | 
+          WITH COMPONENTS {sutInfo} | 
+		  WITH COMPONENTS {pktCount}  ) OPTIONAL, -- if exception reported, no InfoContent provided
 	exception OPTIONAL
 	})
 

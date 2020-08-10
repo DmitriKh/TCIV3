@@ -11,34 +11,24 @@ IMPORTS
 
 VarLengthNumber FROM CITSapplMgmtIDs {iso(1) standard(0) cits-applMgmt (17419) ids (1) version1 (1)} 
 
-EXT-TYPE, Extension, RefExt, c-Reserved, c-RepeatRate,c-TxPowerUsed80211, c-2Dlocation, c-3Dlocation, c-advertiserID, c-IPv6Address, c-servicePort,c-EDCAparameterSet, c-ChannelAccess, c-SecondaryDNS, c-GatewayMACaddress,  c-ProviderMACaddress, c-RCPIthreshold, c-WSAcountThreshold, c-WSAcountThresInt, c-ProviderServContext, RepeatRate, TwoDLocation, ThreeDLocation, AdvertiserIdentifier, ProviderServiceContext, EdcaParameterSet, ChannelAccess80211, SecondaryDns,GatewayMacAddress, IPv6Address, TXpower80211, DataRate80211, ChannelNumber80211, ServicePort, ProviderMacAddress, RcpiThreshold, WsaCountThreshold, WsaCountThresholdInterval FROM IEEE-1609-3-WEE {iso(1) identified-organization(3) ieee(111) standards-association-numbered-series-standards(2) wave-stds(1609) dot3(3) wee(1) version0(0)}
+EXT-TYPE, Extension, RefExt, ProtocolType, c-Reserved, LTEv2xChannelInfo, c-ExtendedChannelInfos, c-ProtocolType, c-RepeatRate,c-TxPowerUsed80211, c-2Dlocation, c-3Dlocation, c-advertiserID, c-IPv6Address, c-servicePort,c-EDCAparameterSet, c-ChannelAccess, c-SecondaryDNS, c-GatewayMACaddress,  c-ProviderMACaddress, c-RCPIthreshold, c-WSAcountThreshold, c-WSAcountThresInt, c-ProviderServContext, RepeatRate, TwoDLocation, ThreeDLocation, AdvertiserIdentifier, ProviderServiceContext, EdcaParameterSet, ChannelAccess80211, SecondaryDns,GatewayMacAddress, IPv6Address, TXpower80211, DataRate80211, ChannelNumber80211, ServicePort, ProviderMacAddress, RcpiThreshold, WsaCountThreshold, WsaCountThresholdInterval FROM IEEE-1609-3-WEE {iso(1) identified-organization(3) ieee(111) standards-association-numbered-series-standards(2) wave-stds(1609) dot3(3) wee(1) version0(0)}
 
 /* for information only
 PortNumber FROM CALMfntp { iso (1) standard (0) calm-nonip(29281) fntp(1) asnm-1 (1) version1 (1)} 
 */
 ;
 
-
 -- WSA message
 SrvAdvMsg ::= SEQUENCE { 
-	version 	SrvAdvPrtVersion, -- WSA version
+	version 	RsvAdvPrtVersion, -- WSA version
 	body	SrvAdvBody
 	}
 
-SrvAdvPrtVersion ::= SEQUENCE{
-	messageID	SrvAdvMessageType, -- always set to 0
-	rsvAdvPrtVersion	RsvAdvPrtVersion -- Set to c-rsvAdvPrtVersionNo
-	}
-
-RsvAdvPrtVersion ::= INTEGER (0..7) -- Protocol version
+RsvAdvPrtVersion ::= INTEGER (0..15)
 
 -- Version number indicating the WSA specification in this document
-c-rsvAdvPrtVersionNo	INTEGER (0..7)::=3 -- actual version number of WSA
+c-rsvAdvPrtVersionNo	INTEGER (0..15) ::= 3 -- actual version number of WSA
 
-SrvAdvMessageType ::= INTEGER{
-	saMessage	(0), -- WSA message in IEEE 1609.3, SAM in ISO 24102-5
-	sarMessage	(1) -- SAR message used in ISO 24102-5
-	} (0..1)
 
 SrvAdvBody ::= SEQUENCE{
 	changeCount	SrvAdvChangeCount,
@@ -69,10 +59,37 @@ SrvAdvMsgHeaderExtTypes EXT-TYPE ::= {
 	{ RepeatRate 	IDENTIFIED BY c-RepeatRate } |
 	{ TwoDLocation 	IDENTIFIED BY c-2Dlocation } |
 	{ ThreeDLocation IDENTIFIED BY c-3Dlocation} |
-	{ AdvertiserIdentifier 	IDENTIFIED BY c-advertiserID } ,
+	{ AdvertiserIdentifier 	IDENTIFIED BY c-advertiserID } |
+    { ExtendedChannelInfos IDENTIFIED BY c-ExtendedChannelInfos },
 	...
-	}
+}
 
+ExtendedChannelInfos ::= SEQUENCE OF ExtendedChannelInfo
+
+CHINFO-TYPE ::= CLASS {
+  &id    MedType UNIQUE,
+  &Type
+} WITH SYNTAX {&Type IDENTIFIED BY &id}
+
+ExtendedChannelInfo ::= SEQUENCE {
+  medId  CHINFO-TYPE.&id({ChInfoTypes}),
+  value  CHINFO-TYPE.&Type({ChInfoTypes}{@medId})
+}
+
+MedType ::= INTEGER (0..255)
+
+chInfoType-unknown   MedType ::= 0
+chInfoType-any       MedType ::= 1
+chInfoType-M5        MedType ::= 5
+chInfoType-Cv2x      MedType ::= 12
+
+ChInfoTypes CHINFO-TYPE ::= {
+  { NULL                 IDENTIFIED BY chInfoType-unknown } |
+  { NULL                 IDENTIFIED BY chInfoType-any } |
+  { ChannelInfo          IDENTIFIED BY chInfoType-M5 } |
+  { LTEv2xChannelInfo    IDENTIFIED BY chInfoType-Cv2x },
+  ...
+}
 
 -- Service Info List
 ServiceInfos ::= SEQUENCE OF ServiceInfo -- '0' size allows to send only a routing advertisement
@@ -84,9 +101,11 @@ ServiceInfo ::= SEQUENCE {
 	}
 
 ChannelOptions ::= SEQUENCE{
-	mandApp	MandApp OPTIONAL, -- in WSA set to '0'b
-	serviceProviderPort	ReplyAddress OPTIONAL, -- in WSA set to '0'b
+	reserved1	NULL OPTIONAL, -- not used in WSA, generates a reserved '0' bit
+	reserved2	NULL OPTIONAL, -- not used in WSA, generates a reserved '0' bit
+       -- Forces 2-bit subfield to 0’s
 	extensions	ServiceInfoExts OPTIONAL 
+       -- Specifies WAVE Info Element Extensions
 	}
 	
 
@@ -94,15 +113,6 @@ ChannelIndex ::= INTEGER {
 	notUsed	(0), -- ChannelInfos is not used 
 	firstEntry	(1)
 	}(0..31)
-
-/* For information: ISO definition
-ReplyAddress ::= PortNumber -- when not present PSID is used for source and destination
-*/
--- Dummy ReplyAddress as long as port numbers are not used
-ReplyAddress ::= NULL -- never used
-
--- Dummy MandApp as long as this feature is not used
-MandApp ::= NULL
 
 -- Service Info Extensions
 ServiceInfoExts ::= SEQUENCE OF ServiceInfoExt
@@ -116,9 +126,9 @@ ServiceInfoExtTypes EXT-TYPE ::= {
 	{ ProviderMacAddress	IDENTIFIED BY c-ProviderMACaddress } |
 	{ RcpiThreshold	IDENTIFIED BY c-RCPIthreshold } |
 	{ WsaCountThreshold	IDENTIFIED BY c-WSAcountThreshold } |
-	{ WsaCountThresholdInterval IDENTIFIED BY c-WSAcountThresInt },
-	...
-	}
+	{ WsaCountThresholdInterval IDENTIFIED BY c-WSAcountThresInt } |
+	{ ProtocolType         IDENTIFIED BY c-ProtocolType }
+}
 
 
 -- Channel Info List
@@ -140,13 +150,13 @@ WsaChInfoDataRate ::= SEQUENCE{
 	}
 
 ChInfoOptions ::= SEQUENCE{
-	option1	NULL OPTIONAL, -- not used
-	option2	NULL OPTIONAL, -- not used
-	option3	NULL OPTIONAL, -- not used
-	option4	NULL OPTIONAL, -- not used
-	option5	NULL OPTIONAL, -- not used
-	option6	NULL OPTIONAL, -- not used
-	option7	NULL OPTIONAL, -- not used
+	option1	NULL OPTIONAL, -- not used, generates a reserved '0' bit
+	option2	NULL OPTIONAL, -- not used, generates a reserved '0' bit
+	option3	NULL OPTIONAL, -- not used, generates a reserved '0' bit
+	option4	NULL OPTIONAL, -- not used, generates a reserved '0' bit
+	option5	NULL OPTIONAL, -- not used, generates a reserved '0' bit
+	option6	NULL OPTIONAL, -- not used, generates a reserved '0' bit
+	option7	NULL OPTIONAL, -- not used, generates a reserved '0' bit
 	extensions	ChannelInfoExts OPTIONAL
 	} -- this is the one octet "Channel Info Option Indicator"
 

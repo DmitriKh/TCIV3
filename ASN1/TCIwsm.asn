@@ -11,7 +11,8 @@ DataRate80211,
 TXpower80211, 
 ChannelNumber80211  FROM IEEE-1609-3-WEE {iso(1) identified-organization(3) ieee(111) standards-association-numbered-series-standards(2) wave-stds(1609) dot3(3) wee(1) version0(0)}
 
-ServiceInfoExts, 
+ServiceInfos,
+SrvAdvMsgHeaderExts,
 ChannelInfos, 
 RoutingAdvertisement FROM IEEE-1609-3-WSA {iso(1) identified-organization(3) ieee(111) standards-association-numbered-series-standards(2) wave-stds(1609) dot3(3) wsa(3) version0(0)}
 
@@ -39,7 +40,7 @@ SetWsmTxInfo ::= SEQUENCE{      -- handled through WSM-WaveShortMessage.request,
     psid                    Psid,
     radio                   RadioInterface,
     security                SecurityContext,
-    transmitPowerLevel      TXpower80211,
+    transmitPowerLevel      TXpower80211  OPTIONAL,
     infoElementsIncluded    WaveElementsIncluded DEFAULT '000000000000000000000000'B, -- default no WAVE Extension Info elements included
     userPriority            UserPriority OPTIONAL,
     channelIdentifier       ChannelNumber80211 OPTIONAL,
@@ -89,10 +90,10 @@ StopWsmRx ::= SEQUENCE{
 
 StartWsaTxPerdiodic ::= SEQUENCE{   -- creates WSA with one or more PSIDs via WME-ProviderService.request
     radio                   RadioInterface,
-    destinationMACAddr      MACaddress  DEFAULT 'FFFFFFFFFFFF'H,    
-    wsaChannelIdentifier    ChannelNumber80211,
-    channelAccess           TimeSlot,       
-    repeatRate              RepeatRate,
+    destinationMACAddr      MACaddress  OPTIONAL,    
+    wsaChannelIdentifier    ChannelNumber80211 OPTIONAL,
+    channelAccess           TimeSlot OPTIONAL,       
+    repeatRate              RepeatRate OPTIONAL,
     ipService               BOOLEAN,  -- used for WME, not transmitted in WSA
     security                
         SecurityContext (WITH COMPONENTS {
@@ -103,8 +104,9 @@ StartWsaTxPerdiodic ::= SEQUENCE{   -- creates WSA with one or more PSIDs via WM
         -- if all bits for twoDLocation, threeDLocation, repeatRate set to 0, then WSA Header Wave Info is not included, and WSA Header Option Indicator = 0b0xxx, where x=0 or 1
         -- if optional wra info (see below) is not included, then WSA Header Option Indicator = 0bxxx0
     advertiserId            AdvertiserIdentifier OPTIONAL,
-    serviceInfos            ServiceInfos,
-    channelinfos            ChannelInfos,
+	headerExts				SrvAdvMsgHeaderExts OPTIONAL,
+    serviceInfos            ServiceInfos OPTIONAL,
+    channelinfos            ChannelInfos OPTIONAL,
     wra                     RoutingAdvertisement OPTIONAL,
     -- if the following parameters omitted, use the default values from the SUT MIB
     dataRate                DataRate80211 OPTIONAL,
@@ -212,7 +214,10 @@ WaveElementsIncluded ::= BIT STRING { -- created based on Table F.1 Allocated WA
     wsaCountThreshold   (15),   -- WSA Service Info
     channelAccess       (16),   -- WSA Channel Info
     wsaCountThresholdInt (17),  -- WSA Service Info
-    channelLoad         (18)
+    channelLoad         (18),
+	protocolType		(19),	-- Service Announcements
+	compactTimeConfidence (20),	-- WSM-N-Header
+	extendedChannelInfos (21)	-- WSA Extended Channel Infos
 } (SIZE(24)) 
 
 UserRequestType ::= INTEGER { -- Used in AddUserService request
@@ -227,9 +232,9 @@ WsaType ::= INTEGER {secureWsa (1), unsecureWsa(2)} (1..2)  -- Used in AddUserSe
 */
 
 -- Service Info List
-ServiceInfos ::= SEQUENCE OF ServiceInfo
+-- ServiceInfos ::= SEQUENCE OF ServiceInfo
 
-ServiceInfo ::= SEQUENCE {
+/*ServiceInfo ::= SEQUENCE {
     serviceID       Psid, 
     channelNumber   ChannelNumber80211,
     chOptions       ChannelOptions
@@ -238,5 +243,5 @@ ServiceInfo ::= SEQUENCE {
 ChannelOptions ::= SEQUENCE{        -- type redefinition to be used in ServiceInfo 
     extensions  ServiceInfoExts OPTIONAL 
     }
-
+*/
 END
