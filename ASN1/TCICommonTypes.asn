@@ -1,5 +1,5 @@
 TCI-CommonTypes
-DEFINITIONS AUTOMATIC TAGS ::= 
+DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
@@ -24,9 +24,9 @@ tciMtu INTEGER ::= 2304  -- to determine how to test cases where TCI mtu is smal
 Opaque ::= OCTET STRING(SIZE(0..65535)) -- mtu_size 1500 for Ethernet
 HashedId8  ::= OCTET STRING (SIZE(8))
 
-/* 
+/*
    Response Messages with simple Result
-*/ 
+*/
 
 Response ::= SEQUENCE {
     msgID               MsgID,
@@ -40,13 +40,13 @@ ResultCode ::= ENUMERATED {
     rcFailure (1)  -- failure
 }
 
-/* 
-    Exception Messages 
+/*
+    Exception Messages
 */
 Exception ::= SEQUENCE{
     type        ExceptionType,
     id          ExceptionId OPTIONAL,
-    module      Module OPTIONAL,    
+    module      Module OPTIONAL,
     description ExceptionText OPTIONAL,
     ...
 }
@@ -97,8 +97,8 @@ TimeSlot ::= ENUMERATED {    -- consistent with dot3
 
 RCPI ::= INTEGER (0..255)
 UserPriority ::= INTEGER(0..7)
-Time64 ::= INTEGER (0..9223372036854775807) 
--- time expressed as the number of milliseconds, 
+Time64 ::= INTEGER (0..9223372036854775807)
+-- time expressed as the number of milliseconds,
 -- due to ASN.1 limitation in OSS, the highest bit is set to 0
 
 Psid ::= VarLengthNumber
@@ -107,20 +107,20 @@ Psid ::= VarLengthNumber
 
 --RepeatRate ::= INTEGER (0..255) // Number of messages transmitted per 5sec interval; if set to 0, transmit message one time only
 RepeatRate ::= INTEGER ( -- Number of messages transmitted per 5sec interval per dot3; mapping to MinimumTrafficPeriodicity for PC5
-	250 |   -- sf20
-	100 | 	-- sf50
-	50  | 	-- sf100
-	25  | 	-- sf200
-	16  | 	-- sf300
-	12  | 	-- sf400
-	10  | 	-- sf500
-	8   | 	-- sf600
-	7   | 	-- sf700
-	6   | 	-- sf800
-	5   | 	-- sf900, sf1000
+    250 |   -- sf20
+    100 |   -- sf50
+    50  |   -- sf100
+    25  |   -- sf200
+    16  |   -- sf300
+    12  |   -- sf400
+    10  |   -- sf500
+    8   |   -- sf600
+    7   |   -- sf700
+    6   |   -- sf800
+    5   |   -- sf900, sf1000
     2   |
-	1   |
-	0) 		-- transmit message one time only
+    1   |
+    0)      -- transmit message one time only
 
 MsgID ::=  INTEGER(0..255)
 

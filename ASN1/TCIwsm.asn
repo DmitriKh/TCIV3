@@ -1,42 +1,42 @@
 TCI-wsm
-DEFINITIONS AUTOMATIC TAGS ::= 
+DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
 AdvertiserIdentifier,
 ProviderServiceContext,
-Extension, 
+Extension,
 MACaddress,
 DataRate80211,
-TXpower80211, 
+TXpower80211,
 ChannelNumber80211  FROM IEEE-1609-3-WEE {iso(1) identified-organization(3) ieee(111) standards-association-numbered-series-standards(2) wave-stds(1609) dot3(3) wee(1) version0(0)}
 
 ServiceInfos,
 SrvAdvMsgHeaderExts,
-ChannelInfos, 
+ChannelInfos,
 RoutingAdvertisement FROM IEEE-1609-3-WSA {iso(1) identified-organization(3) ieee(111) standards-association-numbered-series-standards(2) wave-stds(1609) dot3(3) wsa(3) version0(0)}
 
-PduData, 
-PduType, 
-TimeSlot, 
-RepeatRate, 
-UserPriority, 
-Opaque, 
-HashedId8, 
-RadioInterface, 
-Psid, 
+PduData,
+PduType,
+TimeSlot,
+RepeatRate,
+UserPriority,
+Opaque,
+HashedId8,
+RadioInterface,
+Psid,
 Time64 FROM TCI-CommonTypes
 
 EventHandling FROM TCI-eventHandling --used in StartWsmRx
 ;
 
-/* 
+/*
     Request Messages
 */
 
 SetInitialState ::= BOOLEAN (TRUE)
 
-SetWsmTxInfo ::= SEQUENCE{      -- handled through WSM-WaveShortMessage.request, WME-ChannelService.request     
+SetWsmTxInfo ::= SEQUENCE{      -- handled through WSM-WaveShortMessage.request, WME-ChannelService.request
     psid                    Psid,
     radio                   RadioInterface,
     security                SecurityContext,
@@ -56,7 +56,7 @@ SetWsmTxInfo ::= SEQUENCE{      -- handled through WSM-WaveShortMessage.request,
 
 
 -- For sending WSMs use SetWsmTxInfo, then StartWsmTx
--- For sending WSAs use StartWsaTxPerdiodic 
+-- For sending WSAs use StartWsaTxPerdiodic
 
 StartWsmTx ::= SEQUENCE{  -- handled through WSM-WaveShortMessage.request
     psid            Psid,
@@ -90,17 +90,17 @@ StopWsmRx ::= SEQUENCE{
 
 StartWsaTxPerdiodic ::= SEQUENCE{   -- creates WSA with one or more PSIDs via WME-ProviderService.request
     radio                   RadioInterface,
-    destinationMACAddr      MACaddress  OPTIONAL,    
+    destinationMACAddr      MACaddress  OPTIONAL,
     wsaChannelIdentifier    ChannelNumber80211 OPTIONAL,
-    channelAccess           TimeSlot OPTIONAL,       
+    channelAccess           TimeSlot OPTIONAL,
     repeatRate              RepeatRate OPTIONAL,
     ipService               BOOLEAN,  -- used for WME, not transmitted in WSA
-    security                
+    security
         SecurityContext (WITH COMPONENTS {
             contentType (mWSA)
         }),
     signatureLifetime       INTEGER(10..30000),     -- in milliseconds
-    infoElementIncluded     WaveElementsIncluded DEFAULT '000000000000000000000000'B, -- indicates which extensions to include in WSA. Must be consistent with wsaHdrOptInd 
+    infoElementIncluded     WaveElementsIncluded DEFAULT '000000000000000000000000'B, -- indicates which extensions to include in WSA. Must be consistent with wsaHdrOptInd
         -- if all bits for twoDLocation, threeDLocation, repeatRate set to 0, then WSA Header Wave Info is not included, and WSA Header Option Indicator = 0b0xxx, where x=0 or 1
         -- if optional wra info (see below) is not included, then WSA Header Option Indicator = 0bxxx0
     advertiserId            AdvertiserIdentifier OPTIONAL,
@@ -109,10 +109,10 @@ StartWsaTxPerdiodic ::= SEQUENCE{   -- creates WSA with one or more PSIDs via WM
     wra                     RoutingAdvertisement OPTIONAL,
     -- if the following parameters omitted, use the default values from the SUT MIB
     dataRate                DataRate80211 OPTIONAL,
-    userPriority            UserPriority OPTIONAL, 
+    userPriority            UserPriority OPTIONAL,
     transmitPowerLevel      TXpower80211 OPTIONAL,
     ...,
-	headerExts				SrvAdvMsgHeaderExts OPTIONAL   
+	headerExts				SrvAdvMsgHeaderExts OPTIONAL
 }
 
 StopWsaTxPeriodic ::= SEQUENCE{ -- stops WSA and deletes all associated provider services
@@ -121,19 +121,19 @@ StopWsaTxPeriodic ::= SEQUENCE{ -- stops WSA and deletes all associated provider
 }
 
 AddWsaProviderService ::=SEQUENCE{  -- add service to the ProviderServiceRequestTable
-    radio                   RadioInterface, 
+    radio                   RadioInterface,
     serviceInfos            ServiceInfos,
     ...
 }
 
 ChangeWsaProviderService ::=SEQUENCE{   -- change service in the ProviderServiceRequestTable
-    radio                   RadioInterface, 
+    radio                   RadioInterface,
     serviceInfos            ServiceInfos,
     ...
 }
 
 DelWsaProviderService ::=SEQUENCE{  -- deletes specified service in the ProviderServiceRequestTable
-    radio                   RadioInterface, 
+    radio                   RadioInterface,
     serviceInfos            ServiceInfos,
     ...
 }
@@ -154,14 +154,14 @@ AddUserService ::= SEQUENCE{    -- register user service via WME-UserService.req
     eventHandling           EventHandling,                  -- event handling when service is joined
     ...
 }
-    
+
 DelUserService ::= SEQUENCE{
     psid                    Psid,
     radio                   RadioInterface,
     ...
 }
 
-RequestWsmTxCount ::= BOOLEAN (TRUE)      -- Request count of WSM packets Tx by SUT 
+RequestWsmTxCount ::= BOOLEAN (TRUE)      -- Request count of WSM packets Tx by SUT
 RequestWsmTxCountReset ::= BOOLEAN (TRUE) -- Reset count of WSM Tx packets
 
 RequestWsmRxCount ::= BOOLEAN (TRUE)      -- Request count of WSM packets Rx by SUT after PSID filter and match to pduFingerPrint
@@ -175,8 +175,8 @@ ContentType ::= ENUMERATED {
     mIeee16092Data  (1),
     mWSA            (2),
     mBSM            (3),
-    mMAP            (4),    
-    mSPAT           (5),        
+    mMAP            (4),
+    mSPAT           (5),
     mTIM            (6)
 }
 
@@ -190,7 +190,7 @@ SignerIdentifierType ::= ENUMERATED {
 
 SecurityContext ::= SEQUENCE{
     contentType             ContentType,
-    signerIdentifierType    SignerIdentifierType, 
+    signerIdentifierType    SignerIdentifierType,
     certID                  HashedId8 OPTIONAL,
     ...
 }
@@ -218,7 +218,7 @@ WaveElementsIncluded ::= BIT STRING { -- created based on Table F.1 Allocated WA
 	protocolType		(19),	-- Service Announcements
 	compactTimeConfidence (20),	-- WSM-N-Header
 	extendedChannelInfos (21)	-- WSA Extended Channel Infos
-} (SIZE(24)) 
+} (SIZE(24))
 
 UserRequestType ::= INTEGER { -- Used in AddUserService request
     autoAccessOnMatch (0),
@@ -235,13 +235,13 @@ WsaType ::= INTEGER {secureWsa (1), unsecureWsa(2)} (1..2)  -- Used in AddUserSe
 -- ServiceInfos ::= SEQUENCE OF ServiceInfo
 
 /*ServiceInfo ::= SEQUENCE {
-    serviceID       Psid, 
+    serviceID       Psid,
     channelNumber   ChannelNumber80211,
     chOptions       ChannelOptions
     }
 
-ChannelOptions ::= SEQUENCE{        -- type redefinition to be used in ServiceInfo 
-    extensions  ServiceInfoExts OPTIONAL 
+ChannelOptions ::= SEQUENCE{        -- type redefinition to be used in ServiceInfo
+    extensions  ServiceInfoExts OPTIONAL
     }
 */
 END

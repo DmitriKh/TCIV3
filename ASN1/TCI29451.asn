@@ -1,38 +1,38 @@
 --Purpose: Exercise J2945/1 compliant devices by testing the transmission of all possible BSM configurations,
---         Assist J2945/1 testing by providing easy access to VehicleEventFlags, 
---         Assist J2945/1 testing by toggling required but test-interfering aspects of the IUT (GPS, Congestion Control, BSM Transmission). 
+--         Assist J2945/1 testing by providing easy access to VehicleEventFlags,
+--         Assist J2945/1 testing by toggling required but test-interfering aspects of the IUT (GPS, Congestion Control, BSM Transmission).
 --         This ASN file IS NOT INTENDED to replace in-vehicle testing
 
 --Notes: All value bounds in this document are taken directly from the SAE J2735-2016 standard. Information on the rationale and units of the values can be found in the J2735 standards.
 
 TCI-29451
 
-DEFINITIONS AUTOMATIC TAGS ::= 
+DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
-Response, 
-Exception, 
+Response,
+Exception,
 Time64,
 MsgID FROM TCI-CommonTypes
 
 SetInitialState,
--- SetWsmTxInfo, 
-StartWsmTx, 
+-- SetWsmTxInfo,
+StartWsmTx,
 StopWsmTx,
-StartWsmRx, 
+StartWsmRx,
 StopWsmRx  FROM TCI-wsm
 
 Indication FROM TCI-indication
 
-EnableGpsInput, 
-SetLatitude, 
-SetLongitude, 
-SetElevation, 
-SetPositionalAccuracy, 
-SetSpeed, 
-SetHeading, 
-SetAccelerationSet4Way, 
+EnableGpsInput,
+SetLatitude,
+SetLongitude,
+SetElevation,
+SetPositionalAccuracy,
+SetSpeed,
+SetHeading,
+SetAccelerationSet4Way,
 SetGpsTime  FROM TCI-SutControl
 ;
 
@@ -43,7 +43,7 @@ TCI29451 ::= CHOICE{
 --  responseInfo    [3] ResponseInfo,
     exception       [4] Exception,
     ...
-} 
+}
 
 Request ::=  SEQUENCE {
     messageId   MESSAGE-ID-AND-TYPE.&id({MessageTypes}),
@@ -112,7 +112,7 @@ StopBsmRx ::= StopWsmRx (WITH COMPONENTS {
     })
 
 EnableCongestionMitigation ::= BOOLEAN
-    
+
 SetTemporaryID ::= OCTET STRING (SIZE(4))
 
 SetTransmissionState ::= ENUMERATED {
@@ -122,7 +122,7 @@ SetTransmissionState ::= ENUMERATED {
     reverseGears    (3),
     reserved1       (4),
     reserved2       (5),
-    reserved3       (6),   
+    reserved3       (6),
     unavailable     (7)
 }
 
@@ -190,19 +190,19 @@ SetVehicleEventFlags ::= BIT STRING {
 
 SetExteriorLights ::= BIT STRING
 {
-   lowBeamHeadlightsOn       (0), 
-   highBeamHeadlightsOn      (1), 
-   leftTurnSignalOn          (2), 
-   rightTurnSignalOn         (3), 
-   hazardSignalOn            (4), 
+   lowBeamHeadlightsOn       (0),
+   highBeamHeadlightsOn      (1),
+   leftTurnSignalOn          (2),
+   rightTurnSignalOn         (3),
+   hazardSignalOn            (4),
    automaticLightControlOn   (5),
-   daytimeRunningLightsOn    (6), 
-   fogLightOn                (7), 
-   parkingLightsOn           (8) 
+   daytimeRunningLightsOn    (6),
+   fogLightOn                (7),
+   parkingLightsOn           (8)
 }
 
 
-/* 
+/*
    Indication Messages
 */
 

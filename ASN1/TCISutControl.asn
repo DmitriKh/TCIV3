@@ -4,14 +4,14 @@ DEFINITIONS AUTOMATIC TAGS ::= BEGIN
 
 IMPORTS
 Response,
-MsgID, 
+MsgID,
 Time64,
 Exception FROM TCI-CommonTypes
 
 ResponseInfo FROM TCI-responseInfo
 
-Elevation, 
-Longitude, 
+Elevation,
+Longitude,
 Latitude  FROM IEEE-1609-3-WEE {iso(1) identified-organization(3) ieee(111) standards-association-numbered-series-standards(2) wave-stds(1609) dot3(3) wee(1) version0(0)}
 ;
 
@@ -21,7 +21,7 @@ TCISutControl ::= CHOICE{
     responseInfo    [3] SutResponseInfo,
     exception       [4] Exception,
     ...
-    } 
+    }
 
 MESSAGE-ID-AND-TYPE ::= CLASS {
    &id    MsgID UNIQUE,
@@ -41,7 +41,7 @@ MessageTypes MESSAGE-ID-AND-TYPE ::= {
     { RequestSutInfo IDENTIFIED BY requestSutInfo} |
     { RequestSutStatus IDENTIFIED BY requestSutStatus} |
     { SetTestId IDENTIFIED BY setTestId} |
-    
+
     { EnableGpsInput IDENTIFIED BY enableGpsInput} |
     { SetLatitude IDENTIFIED BY setLatitude} |
     { SetLongitude IDENTIFIED BY setLongitude} |
@@ -82,7 +82,7 @@ RequestSutInfo ::= BOOLEAN (TRUE)
 RequestSutStatus ::= BOOLEAN (TRUE)
 
 SutResponseInfo ::= ResponseInfo (WITH COMPONENTS {
-    msgID,  
+    msgID,
     resultCode,
     info (WITH COMPONENTS {sutInfo}  ) OPTIONAL, -- if exception reported, no InfoContent provided
     exception OPTIONAL
@@ -90,7 +90,7 @@ SutResponseInfo ::= ResponseInfo (WITH COMPONENTS {
 
 EnableGpsInput ::= BOOLEAN
 -- True : use GPS sensor to establish SUT position, speed, heading, etc
--- False: use data provided by TCI messages to set SUT position, speed, heading, etc    
+-- False: use data provided by TCI messages to set SUT position, speed, heading, etc
 
 SetGpsTime ::= Time64
 
@@ -116,5 +116,5 @@ SetAccelerationSet4Way ::= SEQUENCE {
     verticalAcceleration INTEGER (-127 .. 127),
     yawRate INTEGER (-32767 .. 32767)
 }
-    
+
 END

@@ -1,5 +1,5 @@
-TCI-16093-PC5 
-DEFINITIONS AUTOMATIC TAGS ::= 
+TCI-16093-PC5
+DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
@@ -12,16 +12,16 @@ SetWsmTxInfo,
 StartWsmRx,
 StopWsmRx,
 StopWsmTx,
-StartWsaTxPerdiodic, 
+StartWsaTxPerdiodic,
 StopWsaTxPeriodic,
-AddWsaProviderService, 
+AddWsaProviderService,
 ChangeWsaProviderService,
 DelWsaProviderService,
 AddUserService,
 DelUserService FROM TCI-wsm
 
-GetIPv6InterfaceInfo, 
-SetIPv6Address, 
+GetIPv6InterfaceInfo,
+SetIPv6Address,
 StartIPv6Ping,
 StopIPv6Ping FROM TCI-ip
 
@@ -32,27 +32,27 @@ Indication FROM TCI-indication
 
 pc5Mtu,
 Exception,
-Response, 
+Response,
 ResultCode,
 MsgID FROM TCI-CommonTypes
 
 tciMtu,
-RepeatRate, 
-Opaque, 
-RadioInterface, 
-Psid, 
+RepeatRate,
+Opaque,
+RadioInterface,
+Psid,
 RCPI
 FROM TCI-CommonTypes
 ;
 
 TCI16093PC5 ::= CHOICE{
-	request			[0]	Request,
-	response		[1]	Response,
-	indication 		[2] Pc5Indication,
-	responseInfo	[3]	Pc5ResponseInfo, 
-	exception		[4] Exception,
-	...
-	} 
+    request         [0] Request,
+    response        [1] Response,
+    indication      [2] Pc5Indication,
+    responseInfo    [3] Pc5ResponseInfo,
+    exception       [4] Exception,
+    ...
+    }
 
 Request ::=  SEQUENCE {
    messageId   MESSAGE-ID-AND-TYPE.&id({MessageTypes}),
@@ -66,60 +66,60 @@ MESSAGE-ID-AND-TYPE ::= CLASS {
    } WITH SYNTAX {&Type IDENTIFIED BY &id}
 
 MessageTypes MESSAGE-ID-AND-TYPE ::= {
-	{ SetInitialState	IDENTIFIED BY setInitialState } |
-	{ Pc5SetWsmTxInfo IDENTIFIED BY setWsmTxInfo} |
-	{ StartWsmTx IDENTIFIED BY startWsmTx} |
-	{ StopWsmTx IDENTIFIED BY stopWsmTx} |
-	{ Pc5StartWsmRx IDENTIFIED BY startWsmRx} |
-	{ StopWsmRx IDENTIFIED BY stopWsmRx} |
+    { SetInitialState   IDENTIFIED BY setInitialState } |
+    { Pc5SetWsmTxInfo IDENTIFIED BY setWsmTxInfo} |
+    { StartWsmTx IDENTIFIED BY startWsmTx} |
+    { StopWsmTx IDENTIFIED BY stopWsmTx} |
+    { Pc5StartWsmRx IDENTIFIED BY startWsmRx} |
+    { StopWsmRx IDENTIFIED BY stopWsmRx} |
 
-	{ Pc5StartWsaTxPerdiodic IDENTIFIED BY startWsaTxPerdiodic} |
-	{ StopWsaTxPeriodic IDENTIFIED BY stopWsaTxPeriodic} |
-	{ AddWsaProviderService IDENTIFIED BY addWsaProviderService} |
-	{ ChangeWsaProviderService IDENTIFIED BY changeWsaProviderService} |
-	{ DelWsaProviderService IDENTIFIED BY delWsaProviderService} |
-	{ Pc5AddUserService IDENTIFIED BY addUserService} |
-	{ DelUserService IDENTIFIED BY delUserService} |
-	{ GetIPv6InterfaceInfo IDENTIFIED BY getIpv6InterfaceInfo} |
-	{ SetIPv6Address IDENTIFIED BY setIpv6Address} |
-	{ StartIPv6Ping IDENTIFIED BY startIpv6Ping} |
-	{ StopIPv6Ping IDENTIFIED BY stopIpv6Ping} |
+    { Pc5StartWsaTxPerdiodic IDENTIFIED BY startWsaTxPerdiodic} |
+    { StopWsaTxPeriodic IDENTIFIED BY stopWsaTxPeriodic} |
+    { AddWsaProviderService IDENTIFIED BY addWsaProviderService} |
+    { ChangeWsaProviderService IDENTIFIED BY changeWsaProviderService} |
+    { DelWsaProviderService IDENTIFIED BY delWsaProviderService} |
+    { Pc5AddUserService IDENTIFIED BY addUserService} |
+    { DelUserService IDENTIFIED BY delUserService} |
+    { GetIPv6InterfaceInfo IDENTIFIED BY getIpv6InterfaceInfo} |
+    { SetIPv6Address IDENTIFIED BY setIpv6Address} |
+    { StartIPv6Ping IDENTIFIED BY startIpv6Ping} |
+    { StopIPv6Ping IDENTIFIED BY stopIpv6Ping} |
 
-	{ SetUeConfig IDENTIFIED BY setUeConfig} |
-	{ RequestWsmTxCount IDENTIFIED BY requestWsmTxCount} |
-	{ RequestWsmRxCount IDENTIFIED BY requestWsmRxCount} |
-	{ RequestWsmTxCountReset IDENTIFIED BY requestWsmTxCountReset} |
-	{ RequestWsmRxCountReset IDENTIFIED BY requestWsmRxCountReset} |
-	{ SendATcommand IDENTIFIED BY sendATcommand} | 
-	{ SendUeConfigXML IDENTIFIED BY sendUeConfigXML } 
+    { SetUeConfig IDENTIFIED BY setUeConfig} |
+    { RequestWsmTxCount IDENTIFIED BY requestWsmTxCount} |
+    { RequestWsmRxCount IDENTIFIED BY requestWsmRxCount} |
+    { RequestWsmTxCountReset IDENTIFIED BY requestWsmTxCountReset} |
+    { RequestWsmRxCountReset IDENTIFIED BY requestWsmRxCountReset} |
+    { SendATcommand IDENTIFIED BY sendATcommand} |
+    { SendUeConfigXML IDENTIFIED BY sendUeConfigXML }
 }
 
-setInitialState     					MsgID ::= 1
-setWsmTxInfo     						MsgID ::= 2
-startWsmTx     							MsgID ::= 3
-stopWsmTx		     					MsgID ::= 4
-startWsaTxPerdiodic     				MsgID ::= 5
-stopWsaTxPeriodic     					MsgID ::= 6
-startWsmRx     							MsgID ::= 7
-stopWsmRx     							MsgID ::= 8
-addWsaProviderService		    		MsgID ::= 9
-changeWsaProviderService				MsgID ::= 10
-delWsaProviderService		    		MsgID ::= 11
-addUserService						    MsgID ::= 12
-delUserService						    MsgID ::= 13
-getIpv6InterfaceInfo					MsgID ::= 14
-setIpv6Address						    MsgID ::= 15
-startIpv6Ping							MsgID ::= 16
-stopIpv6Ping							MsgID ::= 17
+setInitialState                         MsgID ::= 1
+setWsmTxInfo                            MsgID ::= 2
+startWsmTx                              MsgID ::= 3
+stopWsmTx                               MsgID ::= 4
+startWsaTxPerdiodic                     MsgID ::= 5
+stopWsaTxPeriodic                       MsgID ::= 6
+startWsmRx                              MsgID ::= 7
+stopWsmRx                               MsgID ::= 8
+addWsaProviderService                   MsgID ::= 9
+changeWsaProviderService                MsgID ::= 10
+delWsaProviderService                   MsgID ::= 11
+addUserService                          MsgID ::= 12
+delUserService                          MsgID ::= 13
+getIpv6InterfaceInfo                    MsgID ::= 14
+setIpv6Address                          MsgID ::= 15
+startIpv6Ping                           MsgID ::= 16
+stopIpv6Ping                            MsgID ::= 17
 
-setUeConfig								MsgID ::= 21
-sendATcommand							MsgID ::= 22
-sendUeConfigXML 						MsgID ::= 23
-requestSutStatus						MsgID ::= 24
-requestWsmTxCount						MsgID ::= 25
-requestWsmRxCount			  			MsgID ::= 26
-requestWsmTxCountReset					MsgID ::= 27
-requestWsmRxCountReset		  			MsgID ::= 28
+setUeConfig                             MsgID ::= 21
+sendATcommand                           MsgID ::= 22
+sendUeConfigXML                         MsgID ::= 23
+requestSutStatus                        MsgID ::= 24
+requestWsmTxCount                       MsgID ::= 25
+requestWsmRxCount                       MsgID ::= 26
+requestWsmTxCountReset                  MsgID ::= 27
+requestWsmRxCountReset                  MsgID ::= 28
 
 /* IMPORTED Messages without changes
 
@@ -134,40 +134,40 @@ AddWsaProviderService,
 ChangeWsaProviderService,
 DelWsaProviderService
 DelUserService
-GetIPv6InterfaceInfo, 
-SetIPv6Address, 
+GetIPv6InterfaceInfo,
+SetIPv6Address,
 StartIPv6Ping,
-StopIPv6Ping 
+StopIPv6Ping
 */
 
 SendATcommand ::=  ATcmdInfo -- e.g. AT+CATM, AT+CCUTLE, AT+CUSPCREQ, AT+CUTCR, AT+CCBRREQ, AT+CV2XDTS, ATV1, ATV0
 -- response from SendATcommand is provided via Pc5ResponseInfo
 
 Pc5SetWsmTxInfo ::= SetWsmTxInfo (WITH COMPONENTS {
-		psid,
-		radio,
-		security,
-		transmitPowerLevel ABSENT,	-- set by SetUeConfig.pMax
-		infoElementsIncluded ('000000000000000000000000'B), -- default no WAVE Extension Info elements included
-		userPriority ABSENT,		-- set by SetUeConfig.pppp
-		channelIdentifier ABSENT,   -- set by SetUeConfig.earfcn
-		dataRate ABSENT,  			-- set by SetUeConfig.mcs
-		timeslot ABSENT,
-		repeatRate OPTIONAL,		-- repeatRate expressed per 1609.3 and values constrained to support SPS Periodicity, alternatively - SetUeConfig.minTrafficPeriodicity
-		destinationMACAddr OPTIONAL,-- L2 destination set per 3161/0
-		channelLoad	ABSENT,
-		expiryTime	ABSENT,
-		payload ABSENT
-	})
+        psid,
+        radio,
+        security,
+        transmitPowerLevel ABSENT,  -- set by SetUeConfig.pMax
+        infoElementsIncluded ('000000000000000000000000'B), -- default no WAVE Extension Info elements included
+        userPriority ABSENT,        -- set by SetUeConfig.pppp
+        channelIdentifier ABSENT,   -- set by SetUeConfig.earfcn
+        dataRate ABSENT,            -- set by SetUeConfig.mcs
+        timeslot ABSENT,
+        repeatRate OPTIONAL,        -- repeatRate expressed per 1609.3 and values constrained to support SPS Periodicity, alternatively - SetUeConfig.minTrafficPeriodicity
+        destinationMACAddr OPTIONAL,-- L2 destination set per 3161/0
+        channelLoad ABSENT,
+        expiryTime  ABSENT,
+        payload ABSENT
+    })
 
 Pc5StartWsaTxPerdiodic ::= StartWsaTxPerdiodic (WITH COMPONENTS {
     radio,
     destinationMACAddr,             -- L2 destination set per 3161/0
-    wsaChannelIdentifier ABSENT,	-- set by SetUeConfig.earfcn
+    wsaChannelIdentifier ABSENT,    -- set by SetUeConfig.earfcn
     channelAccess ABSENT,
-    repeatRate OPTIONAL,			-- repeatRate expressed per 1609.3 and values constrained to support SPS Periodicity, alternatively - SetUeConfig.minTrafficPeriodicity
+    repeatRate OPTIONAL,            -- repeatRate expressed per 1609.3 and values constrained to support SPS Periodicity, alternatively - SetUeConfig.minTrafficPeriodicity
     ipService,
-    security,                
+    security,
     signatureLifetime,
     infoElementIncluded,
     advertiserId OPTIONAL,
@@ -175,49 +175,49 @@ Pc5StartWsaTxPerdiodic ::= StartWsaTxPerdiodic (WITH COMPONENTS {
     channelinfos,
     wra OPTIONAL,
     -- if the following parameters omitted, use the default values from the SUT MIB
-    dataRate ABSENT,				-- set by SetUeConfig.mcs
-    userPriority ABSENT, 			-- set by SetUeConfig.pppp
-    transmitPowerLevel ABSENT,		-- set by SetUeConfig.pMax
-	headerExts OPTIONAL
+    dataRate ABSENT,                -- set by SetUeConfig.mcs
+    userPriority ABSENT,            -- set by SetUeConfig.pppp
+    transmitPowerLevel ABSENT,      -- set by SetUeConfig.pMax
+    headerExts OPTIONAL
 })
 
 
 SetUeConfig ::= SEQUENCE {
-	earfcn					EARFCN OPTIONAL,				-- channel
-    pMax					P-Max OPTIONAL,					-- Tx power
-    bw			    		SL-Bandwidth-r12 OPTIONAL,		-- bandwidth
-	minTrafficPeriodicity	TrafficPeriodicity-r14 OPTIONAL,-- repeat rate
-    mcs						MCS OPTIONAL,					-- modulation coding rate
-	rbSize					RBSize OPTIONAL,				-- resource block size
-	txMethod				TxMethod OPTIONAL, 				-- pool SPS or One shot
-	pppp					PPPP OPTIONAL,					-- user priority
-	spsReservationSize		SpsReservationSize OPTIONAL, 	-- SPS reservation size (if applicable) with any SPS flow creation
-	pdb						PDB OPTIONAL,				 	-- Packet delay budget i.e. Expiry Time
+    earfcn                  EARFCN OPTIONAL,                -- channel
+    pMax                    P-Max OPTIONAL,                 -- Tx power
+    bw                      SL-Bandwidth-r12 OPTIONAL,      -- bandwidth
+    minTrafficPeriodicity   TrafficPeriodicity-r14 OPTIONAL,-- repeat rate
+    mcs                     MCS OPTIONAL,                   -- modulation coding rate
+    rbSize                  RBSize OPTIONAL,                -- resource block size
+    txMethod                TxMethod OPTIONAL,              -- pool SPS or One shot
+    pppp                    PPPP OPTIONAL,                  -- user priority
+    spsReservationSize      SpsReservationSize OPTIONAL,    -- SPS reservation size (if applicable) with any SPS flow creation
+    pdb                     PDB OPTIONAL,                   -- Packet delay budget i.e. Expiry Time
     ...
-    -- rbCount					RBCount, 
-	-- sps						SPS,  
-	-- event					PC5Event,
+    -- rbCount                  RBCount,
+    -- sps                      SPS,
+    -- event                    PC5Event,
 }
 
 SendUeConfigXML ::= SEQUENCE {
-	counter	    INTEGER (1..127),			-- index for the current segment
-	total		INTEGER (1..127),			-- total number of segments to be transferred
-	pdu			Opaque(SIZE(0..tciMtu)),    -- max Pdu for tci is set in TCI-Common as 1500
-	...
+    counter     INTEGER (1..127),           -- index for the current segment
+    total       INTEGER (1..127),           -- total number of segments to be transferred
+    pdu         Opaque(SIZE(0..tciMtu)),    -- max Pdu for tci is set in TCI-Common as 1500
+    ...
 }
 
 StartWsmTx ::= SEQUENCE{  -- handled through WSM-WaveShortMessage.request
     psid            Psid,
     radio           RadioInterface,
     repeatRate      RepeatRate, -- when set to 0 - one shot message, otherwise periodic with RepeatRate per 1609.3
-    -- 20ms 50, 100, 200, .. 1000ms, (250, 50, 25, ... 5). 
+    -- 20ms 50, 100, 200, .. 1000ms, (250, 50, 25, ... 5).
     payload         Opaque(SIZE(0..pc5Mtu)) OPTIONAL,
     ...
 }
 
 Pc5StartWsmRx ::= StartWsmRx (WITH COMPONENTS {
-	psid OPTIONAL,
-	radio,
+    psid OPTIONAL,
+    radio,
     eventHandling,
     pduFilter OPTIONAL
 })
@@ -238,62 +238,62 @@ Pc5AddUserService ::= AddUserService (WITH COMPONENTS {
     eventHandling
 })
 
-/* 
+/*
    Indication Messages
 */
 
 Pc5Indication ::= Indication (WITH COMPONENTS {
-	radio,
-	event (
-			eWsmPktRx | 
-			eIpv6PktRx | 
-			eIcmp6PktRx | 
-			eIpv6ConfigChanged | 
-			eDot3RequestMatchedAvailAppService | 
-			eDot2VerificationCompleteWithResult | 
-			exception),
-	eventParams	(WITH COMPONENTS {service} |
-				 WITH COMPONENTS {wsm} |
-				 WITH COMPONENTS {ip} |
-				 WITH COMPONENTS {security}
-				 ) OPTIONAL,
-	pdu	OPTIONAL,
-	exception OPTIONAL
-	})
+    radio,
+    event (
+            eWsmPktRx |
+            eIpv6PktRx |
+            eIcmp6PktRx |
+            eIpv6ConfigChanged |
+            eDot3RequestMatchedAvailAppService |
+            eDot2VerificationCompleteWithResult |
+            exception),
+    eventParams (WITH COMPONENTS {service} |
+                 WITH COMPONENTS {wsm} |
+                 WITH COMPONENTS {ip} |
+                 WITH COMPONENTS {security}
+                 ) OPTIONAL,
+    pdu OPTIONAL,
+    exception OPTIONAL
+    })
 
-/* 
+/*
    ResponseInfo Messages
 */
 
 Pc5ResponseInfo ::= ResponseInfo (WITH COMPONENTS {
-	msgID,	
-	resultCode,
-	info (WITH COMPONENTS {ipv6InterfaceInfo} | 
-          WITH COMPONENTS {sutInfo} | 
-          WITH COMPONENTS {atCmdInfo} | 
-		  WITH COMPONENTS {pktCount} |
+    msgID,
+    resultCode,
+    info (WITH COMPONENTS {ipv6InterfaceInfo} |
+          WITH COMPONENTS {sutInfo} |
+          WITH COMPONENTS {atCmdInfo} |
+          WITH COMPONENTS {pktCount} |
           WITH COMPONENTS {sutStatus} ) OPTIONAL, -- if exception reported, no InfoContent provided
-	exception OPTIONAL
-	})
+    exception OPTIONAL
+    })
 
-BandwidthPC5  ::= INTEGER (0..255)    -- 
+BandwidthPC5  ::= INTEGER (0..255)    --
 EARFCN        ::= ARFCN-ValueEUTRA-r9 -- channel number
 MCS           ::= INTEGER(0..31)      -- Modulation & Coding scheme
-PSxCH  		  ::= ENUMERATED {
-			useDefault (0),
-			pscch (1),				  -- Physical Sidelink Control Channel 
-			pssch (2),				  -- Physical Sidelink Shared Channel 
-			both (3)
+PSxCH         ::= ENUMERATED {
+            useDefault (0),
+            pscch (1),                -- Physical Sidelink Control Channel
+            pssch (2),                -- Physical Sidelink Shared Channel
+            both (3)
 }
-PPPP          ::= SL-Priority-r13	 
+PPPP          ::= SL-Priority-r13
 RBSize        ::= ENUMERATED {n6, n15, n25, n50, n75, n100}
 RBCount       ::= INTEGER(0..65535)
-TxMethod	  ::= ENUMERATED {
-			sps (1),				 -- Semi Persistent Scheduling method
-			oneshot (2)				 -- Event Based Transmission (commonly known as one shot transmissions)
+TxMethod      ::= ENUMERATED {
+            sps (1),                 -- Semi Persistent Scheduling method
+            oneshot (2)              -- Event Based Transmission (commonly known as one shot transmissions)
 }
 -- SPS           ::= INTEGER(0..65535)
---PC5Event	  ::= INTEGER(0..65535)
+--PC5Event    ::= INTEGER(0..65535)
 --PacketSize    ::= INTEGER(0..pc5Mtu)
 --RSSI          ::= RCPI
 
@@ -302,15 +302,15 @@ TxMethod	  ::= ENUMERATED {
 maxEARFCN2 INTEGER          ::= 262143                      -- Highest value extended EARFCN range
 maxSL-TxPool-r12 INTEGER    ::= 4                           -- Maximum number of individual sidelink Tx resource pools
 
-SL-Bandwidth-r12			::= ENUMERATED {n6, n15, n25, n50, n75, n100}
+SL-Bandwidth-r12            ::= ENUMERATED {n6, n15, n25, n50, n75, n100}
 ARFCN-ValueEUTRA-r9         ::= INTEGER (0..maxEARFCN2)
 P-Max                       ::= INTEGER (-30..33)
 SL-Priority-r13             ::= INTEGER (1..8)
 SL-TxPoolIdentity-r12       ::= INTEGER (1.. maxSL-TxPool-r12)
-PDB							::= INTEGER (0..1023)
-SpsReservationSize			::= INTEGER (0..pc5Mtu)
-TrafficPeriodicity-r14		::=	ENUMERATED {
-	sf20, sf50, sf100, sf200, sf300, sf400, sf500,
-	sf600, sf700, sf800, sf900, sf1000}
+PDB                         ::= INTEGER (0..1023)
+SpsReservationSize          ::= INTEGER (0..pc5Mtu)
+TrafficPeriodicity-r14      ::= ENUMERATED {
+    sf20, sf50, sf100, sf200, sf300, sf400, sf500,
+    sf600, sf700, sf800, sf900, sf1000}
 
 END

@@ -1,32 +1,32 @@
 TCI-16094
-DEFINITIONS AUTOMATIC TAGS ::= 
+DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
 dsrcMtu,
-Response, 
-Exception, 
+Response,
+Exception,
 MsgID FROM TCI-CommonTypes
 
-SetInitialState, 
-SetWsmTxInfo, 
-StartWsmTx, 
-StopWsmTx, 
-StartWsmRx, 
+SetInitialState,
+SetWsmTxInfo,
+StartWsmTx,
+StopWsmTx,
+StartWsmRx,
 StopWsmRx FROM TCI-wsm
 
 AddTxProfile,
 DelTxProfile,
-GetIPv6InterfaceInfo, 
-StartIPv6Tx, 
-StopIPv6Tx, 
-StartIPv6Rx, 
-StopIPv6Rx, 
-SetIPv6Address, 
+GetIPv6InterfaceInfo,
+StartIPv6Tx,
+StopIPv6Tx,
+StartIPv6Rx,
+StopIPv6Rx,
+SetIPv6Address,
 StartIPv6Ping,
 StopIPv6Ping FROM TCI-ip
 
-ResponseInfo, 
+ResponseInfo,
 Ipv6InterfaceInfo FROM TCI-responseInfo
 
 Indication FROM TCI-indication
@@ -40,7 +40,7 @@ TCI16094 ::= CHOICE{
     responseInfo    [3] Dot4ResponseInfo,
     exception       [4] Exception,
     ...
-    } 
+    }
 
 Request ::=  SEQUENCE {
    messageId   MESSAGE-ID-AND-TYPE.&id({MessageTypes}),
@@ -71,7 +71,7 @@ MessageTypes MESSAGE-ID-AND-TYPE ::= {
     { StartIPv6Ping IDENTIFIED BY startIpv6Ping} |
     { StopIPv6Ping IDENTIFIED BY stopIpv6Ping} |
     { AddTxProfile IDENTIFIED BY addTxProfile} |
-    { DelTxProfile IDENTIFIED BY delTxProfile} 
+    { DelTxProfile IDENTIFIED BY delTxProfile}
 }
 
 setInitialState         MsgID ::= 1
@@ -91,24 +91,24 @@ stopIpv6Ping            MsgID ::= 14
 addTxProfile            MsgID ::= 15
 delTxProfile            MsgID ::= 16
 
-/* 
+/*
    Request Messages
 
-    SetInitialState, 
-    SetWsmTxInfo, 
-    StartWsmTx, 
-    StopWsmTx, 
-    StartWsmRx, 
+    SetInitialState,
+    SetWsmTxInfo,
+    StartWsmTx,
+    StopWsmTx,
+    StartWsmRx,
     StopWsmRx FROM TCI-wsm
 
     addTxProfile,
     delTxProfile,
-    GetIPv6InterfaceInfo, 
-    StartIPv6Tx, 
-    StopIPv6Tx, 
-    StartIPv6Rx, 
-    StopIPv6Rx, 
-    SetIPv6Address, 
+    GetIPv6InterfaceInfo,
+    StartIPv6Tx,
+    StopIPv6Tx,
+    StartIPv6Rx,
+    StopIPv6Rx,
+    SetIPv6Address,
     StartIPv6Ping,
     StopIPv6Ping FROM TCI-ip
 */
@@ -137,19 +137,19 @@ Dot4StartWsmTx ::= StartWsmTx (WITH COMPONENTS {
     payload(SIZE(0..dsrcMtu)) PRESENT
 })
 
-/* 
+/*
    Indication Messages
 */
 
 Dot4Indication ::= Indication (WITH COMPONENTS {
     radio,
-    event ( e16093PktRx | 
-            eWsmPktRx | 
-            eIpv6PktRx | 
-            eIcmp6PktRx | 
-            eIpv6ConfigChanged | 
-            eDot3ChannelAssigned | 
-            eDot3RequestMatchedAvailAppService | 
+    event ( e16093PktRx |
+            eWsmPktRx |
+            eIpv6PktRx |
+            eIcmp6PktRx |
+            eIpv6ConfigChanged |
+            eDot3ChannelAssigned |
+            eDot3RequestMatchedAvailAppService |
             exception),
     eventParams (WITH COMPONENTS {service} |
                  WITH COMPONENTS {wsm} |
@@ -159,12 +159,12 @@ Dot4Indication ::= Indication (WITH COMPONENTS {
     exception OPTIONAL
     })
 
-/* 
+/*
    ResponseInfo Messages
 */
 
 Dot4ResponseInfo ::= ResponseInfo (WITH COMPONENTS {
-    msgID,  
+    msgID,
     resultCode,
     info (WITH COMPONENTS {ipv6InterfaceInfo}  ) OPTIONAL, -- if exception reported, no InfoContent provided
     exception OPTIONAL

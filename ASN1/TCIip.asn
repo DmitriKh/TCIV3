@@ -1,20 +1,20 @@
 TCI-ip
-DEFINITIONS AUTOMATIC TAGS ::= 
+DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
 
 EdcaParameterSet,
 DataRate80211,
-TXpower80211, 
+TXpower80211,
 ChannelNumber80211,
-IPv6Address, 
+IPv6Address,
 ServicePort FROM IEEE-1609-3-WEE {iso(1) identified-organization(3) ieee(111) standards-association-numbered-series-standards(2) wave-stds(1609) dot3(3) wee(1) version0(0)}
 
 ipMtu,
 TimeSlot,
-RepeatRate, 
-Opaque, 
+RepeatRate,
+Opaque,
 RadioInterface FROM TCI-CommonTypes
 
 EventHandling FROM TCI-eventHandling
@@ -35,7 +35,7 @@ AddTxProfile ::= SEQUENCE{      -- usage per IEEE1609.3-2016 6.2.3.3 Assignments
 
 DelTxProfile ::= SEQUENCE{      -- usage per IEEE1609.3-2016 6.2.3.6 Ending service channel access assignments
     radio               RadioInterface ( WITH COMPONENTS { ..., antenna ABSENT }),
-    channelIdentifier   ChannelNumber80211,         -- for MLMEX-CHEND.request, MLMEX-DELETETXPROFILE.request 
+    channelIdentifier   ChannelNumber80211,         -- for MLMEX-CHEND.request, MLMEX-DELETETXPROFILE.request
     ...
 }
 
@@ -47,7 +47,7 @@ GetIPv6InterfaceInfo ::= SEQUENCE{
 SetIPv6Address ::= SEQUENCE{        -- WME-AddressChange.request
     radio               RadioInterface ( WITH COMPONENTS { ..., antenna ABSENT }),
     interfaceName       UTF8String(SIZE(1..255)),
-    ipAddress           IPv6Address OPTIONAL, 
+    ipAddress           IPv6Address OPTIONAL,
     -- optional if the new IPv6 address value must be selected at random
     ...
 }
@@ -74,7 +74,7 @@ StartIPv6Tx ::= IPv6TxRecord (WITH COMPONENTS {
     eventHandling OPTIONAL,
     payload PRESENT
 })
- 
+
 StopIPv6Tx ::= IPv6TxRecord (WITH COMPONENTS {
     radio ( WITH COMPONENTS { ..., antenna ABSENT }),
     interfaceName,

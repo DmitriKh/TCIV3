@@ -1,31 +1,31 @@
 TCI-80211
-DEFINITIONS AUTOMATIC TAGS ::= 
+DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
 dsrcMtu,
-Response, 
-Exception, 
+Response,
+Exception,
 MsgID FROM TCI-CommonTypes
 
 SetInitialState,
 SetWsmTxInfo,
-StartWsmTx, 
-StopWsmTx, 
-StartWsmRx, 
+StartWsmTx,
+StopWsmTx,
+StartWsmRx,
 StopWsmRx  FROM TCI-wsm
 
 Indication FROM TCI-indication
 ;
 
 TCI80211 ::= CHOICE{
-	request			[0]	Request,
-	response		[1]	Response,
-	indication 		[2] Dot11Indication,
---	responseInfo	[3]	Dot11ResponseInfo,
-	exception		[4] Exception,
-	...
-	} 
+    request         [0] Request,
+    response        [1] Response,
+    indication      [2] Dot11Indication,
+--  responseInfo    [3] Dot11ResponseInfo,
+    exception       [4] Exception,
+    ...
+    }
 
 Request ::=  SEQUENCE {
    messageId   MESSAGE-ID-AND-TYPE.&id({MessageTypes}),
@@ -42,63 +42,63 @@ MESSAGE-ID-AND-TYPE ::= CLASS {
 
 MessageTypes MESSAGE-ID-AND-TYPE ::= {
 -- imported from TCI-wsm
-	{ SetInitialState IDENTIFIED BY setInitialState} |
-	{ Dot11SetWsmTxInfo IDENTIFIED BY setWsmTxInfo} |
-	{ Dot11StartWsmTx IDENTIFIED BY startWsmTx} |
-	{ StopWsmTx IDENTIFIED BY stopWsmTx} |
-	{ StartWsmRx IDENTIFIED BY startWsmRx} |
-	{ StopWsmRx IDENTIFIED BY stopWsmRx}
+    { SetInitialState IDENTIFIED BY setInitialState} |
+    { Dot11SetWsmTxInfo IDENTIFIED BY setWsmTxInfo} |
+    { Dot11StartWsmTx IDENTIFIED BY startWsmTx} |
+    { StopWsmTx IDENTIFIED BY stopWsmTx} |
+    { StartWsmRx IDENTIFIED BY startWsmRx} |
+    { StopWsmRx IDENTIFIED BY stopWsmRx}
 }
 
-setInitialState     	MsgID ::= 1
-setWsmTxInfo			MsgID ::= 2
-startWsmTx				MsgID ::= 3
-stopWsmTx				MsgID ::= 4
-startWsmRx				MsgID ::= 5
-stopWsmRx				MsgID ::= 6
+setInitialState         MsgID ::= 1
+setWsmTxInfo            MsgID ::= 2
+startWsmTx              MsgID ::= 3
+stopWsmTx               MsgID ::= 4
+startWsmRx              MsgID ::= 5
+stopWsmRx               MsgID ::= 6
 
-/* 
+/*
     Request Messages
 
-	SetInitialState, 
-	SetWsmTxInfo, 
-	StartWsmTx, 
-	StopWsmTx, 
-	StartWsmRx, 
-	StopWsmRx FROM TCI-wsm
+    SetInitialState,
+    SetWsmTxInfo,
+    StartWsmTx,
+    StopWsmTx,
+    StartWsmRx,
+    StopWsmRx FROM TCI-wsm
 
 */
 
 Dot11SetWsmTxInfo ::= SetWsmTxInfo (WITH COMPONENTS {
-	psid,
-	radio,
-	security,
-	transmitPowerLevel,
-	infoElementsIncluded,
-	userPriority,
-	channelIdentifier,
-	dataRate,
-	timeslot,
-	repeatRate ABSENT,
-	destinationMACAddr ('FFFFFFFFFFFF'H),
-	channelLoad	ABSENT,
-	expiryTime	ABSENT,
-	payload ABSENT
+    psid,
+    radio,
+    security,
+    transmitPowerLevel,
+    infoElementsIncluded,
+    userPriority,
+    channelIdentifier,
+    dataRate,
+    timeslot,
+    repeatRate ABSENT,
+    destinationMACAddr ('FFFFFFFFFFFF'H),
+    channelLoad ABSENT,
+    expiryTime  ABSENT,
+    payload ABSENT
 })
 
 Dot11StartWsmTx ::= StartWsmTx (WITH COMPONENTS {
-	psid,
-	radio,
-	repeatRate,
-	payload(SIZE(0..dsrcMtu)) PRESENT
+    psid,
+    radio,
+    repeatRate,
+    payload(SIZE(0..dsrcMtu)) PRESENT
 })
 
 Dot11Indication ::= Indication (WITH COMPONENTS {
-	radio,
-	event (e80211PktRx),
-	eventParams	(WITH COMPONENTS {d80211frame} ) OPTIONAL,
-	pdu	OPTIONAL,
-	exception OPTIONAL
-	})
+    radio,
+    event (e80211PktRx),
+    eventParams (WITH COMPONENTS {d80211frame} ) OPTIONAL,
+    pdu OPTIONAL,
+    exception OPTIONAL
+    })
 
 END

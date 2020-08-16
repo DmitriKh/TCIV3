@@ -1,32 +1,32 @@
 --Purpose: Exercise J3161/1 compliant devices by testing the transmission of all possible BSM configurations,
 TCI-31611
 
-DEFINITIONS AUTOMATIC TAGS ::= 
+DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
-Response, 
-Exception, 
+Response,
+Exception,
 Time64,
 MsgID FROM TCI-CommonTypes
 
 SetInitialState,
--- SetWsmTxInfo, 
-StartWsmTx, 
+-- SetWsmTxInfo,
+StartWsmTx,
 StopWsmTx,
-StartWsmRx, 
+StartWsmRx,
 StopWsmRx  FROM TCI-wsm
 
 Indication FROM TCI-indication
 
-EnableGpsInput, 
-SetLatitude, 
-SetLongitude, 
-SetElevation, 
-SetPositionalAccuracy, 
-SetSpeed, 
-SetHeading, 
-SetAccelerationSet4Way, 
+EnableGpsInput,
+SetLatitude,
+SetLongitude,
+SetElevation,
+SetPositionalAccuracy,
+SetSpeed,
+SetHeading,
+SetAccelerationSet4Way,
 SetGpsTime  FROM TCI-SutControl
 
 SetUeConfig FROM TCI-16093-PC5
@@ -39,7 +39,7 @@ TCI31611 ::= CHOICE{
 --  responseInfo    [3] ResponseInfo,
     exception       [4] Exception,
     ...
-} 
+}
 
 Request ::=  SEQUENCE {
     messageId   MESSAGE-ID-AND-TYPE.&id({MessageTypes}),
@@ -75,7 +75,7 @@ startBsmTx                          MsgID ::= 2
 stopBsmTx                           MsgID ::= 3
 startBsmRx                          MsgID ::= 4
 stopBsmRx                           MsgID ::= 5
-setUeConfig							MsgID ::= 6
+setUeConfig                         MsgID ::= 6
 enableCongestionMitigation          MsgID ::= 9
 
 setTemporaryID                      MsgID ::= 10
@@ -110,7 +110,7 @@ StopBsmRx ::= StopWsmRx (WITH COMPONENTS {
     })
 
 EnableCongestionMitigation ::= BOOLEAN
-    
+
 SetTemporaryID ::= OCTET STRING (SIZE(4))
 
 SetTransmissionState ::= ENUMERATED {
@@ -120,7 +120,7 @@ SetTransmissionState ::= ENUMERATED {
     reverseGears    (3),
     reserved1       (4),
     reserved2       (5),
-    reserved3       (6),   
+    reserved3       (6),
     unavailable     (7)
 }
 
@@ -188,19 +188,19 @@ SetVehicleEventFlags ::= BIT STRING {
 
 SetExteriorLights ::= BIT STRING
 {
-   lowBeamHeadlightsOn       (0), 
-   highBeamHeadlightsOn      (1), 
-   leftTurnSignalOn          (2), 
-   rightTurnSignalOn         (3), 
-   hazardSignalOn            (4), 
+   lowBeamHeadlightsOn       (0),
+   highBeamHeadlightsOn      (1),
+   leftTurnSignalOn          (2),
+   rightTurnSignalOn         (3),
+   hazardSignalOn            (4),
    automaticLightControlOn   (5),
-   daytimeRunningLightsOn    (6), 
-   fogLightOn                (7), 
-   parkingLightsOn           (8) 
+   daytimeRunningLightsOn    (6),
+   fogLightOn                (7),
+   parkingLightsOn           (8)
 }
 
 
-/* 
+/*
    Indication Messages
 */
 
