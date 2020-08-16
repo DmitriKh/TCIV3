@@ -79,7 +79,7 @@ StartWsmRx ::= SEQUENCE{    -- request to received WSM with matched PSIDs and pr
     timeSlot            TimeSlot OPTIONAL,           -- not used for PC5
     eventHandling       EventHandling,
     ...,
-	pduFingerPrint		OCTET STRING(SIZE(0..4)) OPTIONAL  -- unique octets to be included at the beginning of payload and be used for packet filtering
+	pduFilter           OCTET STRING(SIZE(0..4)) OPTIONAL  -- unique octets to be included at the beginning of payload and be used for packet filtering
 }
 
 StopWsmRx ::= SEQUENCE{
@@ -104,7 +104,6 @@ StartWsaTxPerdiodic ::= SEQUENCE{   -- creates WSA with one or more PSIDs via WM
         -- if all bits for twoDLocation, threeDLocation, repeatRate set to 0, then WSA Header Wave Info is not included, and WSA Header Option Indicator = 0b0xxx, where x=0 or 1
         -- if optional wra info (see below) is not included, then WSA Header Option Indicator = 0bxxx0
     advertiserId            AdvertiserIdentifier OPTIONAL,
-	headerExts				SrvAdvMsgHeaderExts OPTIONAL,
     serviceInfos            ServiceInfos OPTIONAL,
     channelinfos            ChannelInfos OPTIONAL,
     wra                     RoutingAdvertisement OPTIONAL,
@@ -112,7 +111,8 @@ StartWsaTxPerdiodic ::= SEQUENCE{   -- creates WSA with one or more PSIDs via WM
     dataRate                DataRate80211 OPTIONAL,
     userPriority            UserPriority OPTIONAL, 
     transmitPowerLevel      TXpower80211 OPTIONAL,
-    ...
+    ...,
+	headerExts				SrvAdvMsgHeaderExts OPTIONAL   
 }
 
 StopWsaTxPeriodic ::= SEQUENCE{ -- stops WSA and deletes all associated provider services

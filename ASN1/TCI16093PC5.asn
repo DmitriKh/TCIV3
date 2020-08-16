@@ -105,10 +105,10 @@ stopWsmRx     							MsgID ::= 8
 addWsaProviderService		    		MsgID ::= 9
 changeWsaProviderService				MsgID ::= 10
 delWsaProviderService		    		MsgID ::= 11
-addUserService						MsgID ::= 12
-delUserService						MsgID ::= 13
+addUserService						    MsgID ::= 12
+delUserService						    MsgID ::= 13
 getIpv6InterfaceInfo					MsgID ::= 14
-setIpv6Address						MsgID ::= 15
+setIpv6Address						    MsgID ::= 15
 startIpv6Ping							MsgID ::= 16
 stopIpv6Ping							MsgID ::= 17
 
@@ -153,8 +153,8 @@ Pc5SetWsmTxInfo ::= SetWsmTxInfo (WITH COMPONENTS {
 		channelIdentifier ABSENT,   -- set by SetUeConfig.earfcn
 		dataRate ABSENT,  			-- set by SetUeConfig.mcs
 		timeslot ABSENT,
-		repeatRate OPTIONAL,		-- repeatRate expressed per 1609.3 and values contrained to support SPS Periodicity, alternatively - SetUeConfig.minTrafficPeriodicity
-		destinationMACAddr ABSENT,	-- 
+		repeatRate OPTIONAL,		-- repeatRate expressed per 1609.3 and values constrained to support SPS Periodicity, alternatively - SetUeConfig.minTrafficPeriodicity
+		destinationMACAddr OPTIONAL,-- L2 destination set per 3161/0
 		channelLoad	ABSENT,
 		expiryTime	ABSENT,
 		payload ABSENT
@@ -162,23 +162,23 @@ Pc5SetWsmTxInfo ::= SetWsmTxInfo (WITH COMPONENTS {
 
 Pc5StartWsaTxPerdiodic ::= StartWsaTxPerdiodic (WITH COMPONENTS {
     radio,
-    destinationMACAddr ('FFFFFFFFFFFF'H),
+    destinationMACAddr,             -- L2 destination set per 3161/0
     wsaChannelIdentifier ABSENT,	-- set by SetUeConfig.earfcn
     channelAccess ABSENT,
-    repeatRate OPTIONAL,			-- repeatRate expressed per 1609.3 and values contrained to support SPS Periodicity, alternatively - SetUeConfig.minTrafficPeriodicity
+    repeatRate OPTIONAL,			-- repeatRate expressed per 1609.3 and values constrained to support SPS Periodicity, alternatively - SetUeConfig.minTrafficPeriodicity
     ipService,
     security,                
     signatureLifetime,
     infoElementIncluded,
     advertiserId OPTIONAL,
-	headerExts OPTIONAL,
     serviceInfos,
     channelinfos,
     wra OPTIONAL,
     -- if the following parameters omitted, use the default values from the SUT MIB
     dataRate ABSENT,				-- set by SetUeConfig.mcs
     userPriority ABSENT, 			-- set by SetUeConfig.pppp
-    transmitPowerLevel ABSENT		-- set by SetUeConfig.pMax
+    transmitPowerLevel ABSENT,		-- set by SetUeConfig.pMax
+	headerExts OPTIONAL
 })
 
 
@@ -188,7 +188,6 @@ SetUeConfig ::= SEQUENCE {
     bw			    		SL-Bandwidth-r12 OPTIONAL,		-- bandwidth
 	minTrafficPeriodicity	TrafficPeriodicity-r14 OPTIONAL,-- repeat rate
     mcs						MCS OPTIONAL,					-- modulation coding rate
-	psxch					PSxCH OPTIONAL,					-- select PSSCH or PSCCH
 	rbSize					RBSize OPTIONAL,				-- resource block size
 	txMethod				TxMethod OPTIONAL, 				-- pool SPS or One shot
 	pppp					PPPP OPTIONAL,					-- user priority
@@ -220,7 +219,7 @@ Pc5StartWsmRx ::= StartWsmRx (WITH COMPONENTS {
 	psid OPTIONAL,
 	radio,
     eventHandling,
-    pduFingerPrint OPTIONAL
+    pduFilter OPTIONAL
 })
 
 Pc5AddUserService ::= AddUserService (WITH COMPONENTS {

@@ -41,7 +41,7 @@ Indication ::= SEQUENCE{
 Event ::= ENUMERATED {
 	e80211PktRx							(1),	-- used for 802.11 frames or PC5 Mac frames
 	e16093PktRx							(2), 	-- inbound 1603 frame received (before PSID filtering)
-	eWsmPktRx							(3), 	-- WSM received (after PSID match _AND_ filter based on pduFingerPrint (if present))
+	eWsmPktRx							(3), 	-- WSM received (after PSID match _AND_ filter based on pduFilter (if present))
 	eIpv6PktRx							(4), 	-- inbound IPv6 frame received
 	eIcmp6PktRx							(5),	-- inbound ICMP frame received
 	eIpv6ConfigChanged					(6),	-- IPv6 address configuration changed

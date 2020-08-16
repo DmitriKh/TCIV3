@@ -106,17 +106,20 @@ Psid ::= VarLengthNumber
 --IpPort ::= INTEGER(0..65535)      ---- UDP port used in WSA, in SetInitialState
 
 --RepeatRate ::= INTEGER (0..255) // Number of messages transmitted per 5sec interval; if set to 0, transmit message one time only
-RepeatRate ::= INTEGER ( -- Number of messages transmitted per 5sec interval ; mapping to MinimumTrafficPeriodicity for PC5
-	100 |   -- sf20
-	40 | 	-- sf50
-	20 | 	-- sf100
-	10 | 	-- sf200
-	6 | 	-- sf300
-	5 | 	-- sf400
-	4 | 	-- sf500
-	3 | 	-- sf600, sf700
-	2 | 	-- sf800, sf900, sf1000
-	1 |
+RepeatRate ::= INTEGER ( -- Number of messages transmitted per 5sec interval per dot3; mapping to MinimumTrafficPeriodicity for PC5
+	250 |   -- sf20
+	100 | 	-- sf50
+	50  | 	-- sf100
+	25  | 	-- sf200
+	16  | 	-- sf300
+	12  | 	-- sf400
+	10  | 	-- sf500
+	8   | 	-- sf600
+	7   | 	-- sf700
+	6   | 	-- sf800
+	5   | 	-- sf900, sf1000
+    2   |
+	1   |
 	0) 		-- transmit message one time only
 
 MsgID ::=  INTEGER(0..255)
