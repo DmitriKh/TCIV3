@@ -187,16 +187,15 @@ SetUeConfig ::= SEQUENCE {
     pMax                    P-Max OPTIONAL,                 -- Tx power
     bw                      SL-Bandwidth-r12 OPTIONAL,      -- bandwidth
     minTrafficPeriodicity   TrafficPeriodicity-r14 OPTIONAL,-- repeat rate
-    mcs                     MCS OPTIONAL,                   -- modulation coding rate
+    minMcs                  MCS OPTIONAL,                   -- modulation coding rate - min
+    maxMcs                  MCS OPTIONAL,                   -- modulation coding rate - max
+	numSubCh				NumSubCh OPTIONAL,				-- number of subchannels
+	subChSize				SubChSize OPTIONAL,				-- subchannel size
     rbSize                  RBSize OPTIONAL,                -- resource block size
-    txMethod                TxMethod OPTIONAL,              -- pool SPS or One shot
     pppp                    PPPP OPTIONAL,                  -- user priority
     spsReservationSize      SpsReservationSize OPTIONAL,    -- SPS reservation size (if applicable) with any SPS flow creation
     pdb                     PDB OPTIONAL,                   -- Packet delay budget i.e. Expiry Time
     ...
-    -- rbCount                  RBCount,
-    -- sps                      SPS,
-    -- event                    PC5Event,
 }
 
 SendUeConfigXML ::= SEQUENCE {
@@ -219,6 +218,7 @@ Pc5StartWsmRx ::= StartWsmRx (WITH COMPONENTS {
     psid OPTIONAL,
     radio,
     eventHandling,
+    destinationMACAddr OPTIONAL, 
     pduFilter OPTIONAL
 })
 
@@ -276,26 +276,23 @@ Pc5ResponseInfo ::= ResponseInfo (WITH COMPONENTS {
     exception OPTIONAL
     })
 
+--- PC5 types
+
 BandwidthPC5  ::= INTEGER (0..255)    --
 EARFCN        ::= ARFCN-ValueEUTRA-r9 -- channel number
 MCS           ::= INTEGER(0..31)      -- Modulation & Coding scheme
-PSxCH         ::= ENUMERATED {
-            useDefault (0),
-            pscch (1),                -- Physical Sidelink Control Channel
-            pssch (2),                -- Physical Sidelink Shared Channel
-            both (3)
-}
 PPPP          ::= SL-Priority-r13
 RBSize        ::= ENUMERATED {n6, n15, n25, n50, n75, n100}
 RBCount       ::= INTEGER(0..65535)
-TxMethod      ::= ENUMERATED {
-            sps (1),                 -- Semi Persistent Scheduling method
-            oneshot (2)              -- Event Based Transmission (commonly known as one shot transmissions)
+
+NumSubCh					::= INTEGER
+SubChSize					::= INTEGER
+FlowIdentifier 				::= INTEGER
+TxPoolId					::= ENUMERATED {
+            sps1  (1),
+			sps2  (2),
+			event (3)
 }
--- SPS           ::= INTEGER(0..65535)
---PC5Event    ::= INTEGER(0..65535)
---PacketSize    ::= INTEGER(0..pc5Mtu)
---RSSI          ::= RCPI
 
 -- following defintions come from EUTRA-RRC-DEFINITIONS.asn
 

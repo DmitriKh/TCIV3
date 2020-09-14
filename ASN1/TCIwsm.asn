@@ -27,6 +27,9 @@ RadioInterface,
 Psid,
 Time64 FROM TCI-CommonTypes
 
+FlowIdentifier,
+TxPoolId FROM TCI-16093-PC5
+
 EventHandling FROM TCI-eventHandling --used in StartWsmRx
 ;
 
@@ -51,7 +54,9 @@ SetWsmTxInfo ::= SEQUENCE{      -- handled through WSM-WaveShortMessage.request,
     channelLoad             Opaque OPTIONAL,
     expiryTime              Time64 OPTIONAL,
     payload                 Opaque OPTIONAL,
-    ...
+    ...,
+    flowIdentifier			FlowIdentifier  OPTIONAL,		-- Defines if SPS1 or SPS2 or EVENT <- Add
+    txPoolId				TxPoolId OPTIONAL 				-- Tx Pool identifier
 }
 
 
@@ -79,6 +84,7 @@ StartWsmRx ::= SEQUENCE{    -- request to received WSM with matched PSIDs and pr
     timeSlot            TimeSlot OPTIONAL,           -- not used for PC5
     eventHandling       EventHandling,
     ...,
+	destinationMACAddr	MACaddress  OPTIONAL, 			   -- L2 destination addr to be subscribed to or use wildcard (if not specified) - used for PC5
 	pduFilter           OCTET STRING(SIZE(0..4)) OPTIONAL  -- unique octets to be included at the beginning of payload and be used for packet filtering
 }
 

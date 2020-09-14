@@ -127,7 +127,9 @@ Dot3SetWsmTxInfo ::= SetWsmTxInfo (WITH COMPONENTS {
     destinationMACAddr ('FFFFFFFFFFFF'H),
     channelLoad ABSENT,
     expiryTime  ABSENT,
-    payload ABSENT
+    payload ABSENT,
+	flowIdentifier ABSENT,
+	txPoolId ABSENT
 })
 
 Dot3StartWsmTx ::= StartWsmTx (WITH COMPONENTS {
@@ -143,6 +145,7 @@ Dot3StartWsmRx ::= StartWsmRx (WITH COMPONENTS {
     channelIdentifier,
     timeSlot,
     eventHandling,
+	destinationMACAddr OPTIONAL,
     pduFilter OPTIONAL
 })
 
