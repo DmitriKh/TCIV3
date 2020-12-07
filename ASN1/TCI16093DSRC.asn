@@ -128,8 +128,8 @@ Dot3SetWsmTxInfo ::= SetWsmTxInfo (WITH COMPONENTS {
     channelLoad ABSENT,
     expiryTime  ABSENT,
     payload ABSENT,
-	flowIdentifier ABSENT,
-	txPoolId ABSENT
+--	txPoolId ABSENT,
+	flowId ABSENT
 })
 
 Dot3StartWsmTx ::= StartWsmTx (WITH COMPONENTS {

@@ -17,7 +17,7 @@ PduType ::= ENUMERATED {
 
 
 dsrcMtu INTEGER ::= 2304
-pc5Mtu INTEGER ::= 8192
+ltev2xMtu INTEGER ::= 8192
 ipMtu INTEGER ::= 2304
 tciMtu INTEGER ::= 2304  -- to determine how to test cases where TCI mtu is smaller than packet mtu
 

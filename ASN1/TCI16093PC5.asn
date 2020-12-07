@@ -30,7 +30,7 @@ ResponseInfo FROM TCI-responseInfo
 
 Indication FROM TCI-indication
 
-pc5Mtu,
+ltev2xMtu,
 Exception,
 Response,
 ResultCode,
@@ -86,12 +86,15 @@ MessageTypes MESSAGE-ID-AND-TYPE ::= {
     { StopIPv6Ping IDENTIFIED BY stopIpv6Ping} |
 
     { SetUeConfig IDENTIFIED BY setUeConfig} |
+    { SetFlowConfig IDENTIFIED BY setFlowConfig} |    
     { RequestWsmTxCount IDENTIFIED BY requestWsmTxCount} |
     { RequestWsmRxCount IDENTIFIED BY requestWsmRxCount} |
     { RequestWsmTxCountReset IDENTIFIED BY requestWsmTxCountReset} |
     { RequestWsmRxCountReset IDENTIFIED BY requestWsmRxCountReset} |
     { SendATcommand IDENTIFIED BY sendATcommand} |
-    { SendUeConfigXML IDENTIFIED BY sendUeConfigXML }
+    { SendUeConfigXML IDENTIFIED BY sendUeConfigXML } | 
+    { StartUdpForwardTx IDENTIFIED BY startUdpForwardTx } |
+    { StopUdpForwardTx IDENTIFIED BY stopUdpForwardTx }    
 }
 
 setInitialState                         MsgID ::= 1
@@ -112,14 +115,17 @@ setIpv6Address                          MsgID ::= 15
 startIpv6Ping                           MsgID ::= 16
 stopIpv6Ping                            MsgID ::= 17
 
-setUeConfig                             MsgID ::= 21
-sendATcommand                           MsgID ::= 22
-sendUeConfigXML                         MsgID ::= 23
-requestSutStatus                        MsgID ::= 24
-requestWsmTxCount                       MsgID ::= 25
-requestWsmRxCount                       MsgID ::= 26
-requestWsmTxCountReset                  MsgID ::= 27
-requestWsmRxCountReset                  MsgID ::= 28
+sendUeConfigXML                         MsgID ::= 21
+setUeConfig                             MsgID ::= 22
+setFlowConfig                           MsgID ::= 23
+sendATcommand                           MsgID ::= 24
+requestSutStatus                        MsgID ::= 25
+requestWsmTxCount                       MsgID ::= 26
+requestWsmRxCount                       MsgID ::= 27
+requestWsmTxCountReset                  MsgID ::= 28
+requestWsmRxCountReset                  MsgID ::= 29
+startUdpForwardTx                       MsgID ::= 30
+stopUdpForwardTx                        MsgID ::= 31
 
 /* IMPORTED Messages without changes
 
@@ -140,6 +146,23 @@ StartIPv6Ping,
 StopIPv6Ping
 */
 
+/*
+For Wsm transmissions: 
+    SetInitialState
+    SetUeConfig or SendUeConfigXML
+    SetFlowConfig
+    Pc5SetWsmTxInfo
+    StartWsmTx
+    StopWsmTx
+
+For Proxy Mode transmissions (tx only): 
+    SetInitialState
+    SetUeConfig or SendUeConfigXML
+    SetFlowConfig
+    StartUdpForwardTx
+    StopUdpForwardTx    
+*/    
+
 SendATcommand ::=  ATcmdInfo -- e.g. AT+CATM, AT+CCUTLE, AT+CUSPCREQ, AT+CUTCR, AT+CCBRREQ, AT+CV2XDTS, ATV1, ATV0
 -- response from SendATcommand is provided via Pc5ResponseInfo
 
@@ -147,18 +170,38 @@ Pc5SetWsmTxInfo ::= SetWsmTxInfo (WITH COMPONENTS {
         psid,
         radio,
         security,
-        transmitPowerLevel ABSENT,  -- set by SetUeConfig.pMax
+        transmitPowerLevel ABSENT,  -- Not used for LTE-V2X; set Tx Power via SetUeConfig.pMax
         infoElementsIncluded ('000000000000000000000000'B), -- default no WAVE Extension Info elements included
-        userPriority ABSENT,        -- set by SetUeConfig.pppp
-        channelIdentifier ABSENT,   -- set by SetUeConfig.earfcn
-        dataRate ABSENT,            -- set by SetUeConfig.mcs
-        timeslot ABSENT,
-        repeatRate OPTIONAL,        -- repeatRate expressed per 1609.3 and values constrained to support SPS Periodicity, alternatively - SetUeConfig.minTrafficPeriodicity
-        destinationMACAddr OPTIONAL,-- L2 destination set per 3161/0
-        channelLoad ABSENT,
-        expiryTime  ABSENT,
-        payload ABSENT
+        userPriority ABSENT,        -- Not used for LTE-V2X; set User Priority via SetUeConfig.pppp
+        channelIdentifier ABSENT,   -- Not used for LTE-V2X; set Channel via set by SetUeConfig.earfcn
+        dataRate ABSENT,            -- Not used for LTE-V2X; set coding rate via set by SetUeConfig.mcs
+        timeslot ABSENT,            -- Not used for LTE-V2X
+        repeatRate OPTIONAL,        -- this is repeat Rate to be used for actual message transmission which >= than periodicity set via SetFlowConfig
+                                    -- repeatRate expressed per 1609.3 and values constrained to support SPS Periodicity
+        destinationMACAddr OPTIONAL,-- L2 destination set per 3161/0, 
+                                    -- V field and Destination Layer 2 ID to be used in MAC header, 
+                                    -- based on the Peer MAC Address from the WSM-WaveShortMessage.request. 
+                                    -- Only used in the case of unicast WSM or IP transmission.
+        channelLoad ABSENT,         -- Not used for LTE-V2X
+        expiryTime  ABSENT,         -- Not used for LTE-V2X
+        payload ABSENT              -- Not used for LTE-V2X
     })
+
+StartUdpForwardTx ::= SEQUENCE {   
+    udpPort  INTEGER(0..65535),   -- UDP IPv4 port used to forward payload via LTE-V2X radio interface
+                                  -- For WSMP, payload must include |Non-IP Type Header|WSMP Packet| see Fig M.6 IEEE 1609.3
+                                  -- For IP, payload must include |IP packet| see Fig M.7 IEEE 1609.3                                  
+                                  -- IPv4 TOS or IPv6 Traffic Class byte will map to pppp (0-0,1-1...7-7)
+    radio    RadioInterface,
+    flowId   FlowIdentifier,
+    pc5Mtui  INTEGER(0..65535) DEFAULT ltev2xMtu,
+    ...
+}
+
+StopUdpForwardTx ::= SEQUENCE {
+    udpPort  INTEGER(0..65535),
+    ...
+}
 
 Pc5StartWsaTxPerdiodic ::= StartWsaTxPerdiodic (WITH COMPONENTS {
     radio,
@@ -180,47 +223,66 @@ Pc5StartWsaTxPerdiodic ::= StartWsaTxPerdiodic (WITH COMPONENTS {
     transmitPowerLevel ABSENT,      -- set by SetUeConfig.pMax
     headerExts OPTIONAL
 })
+-- ??? roadside ? update WSA to match other WSM
 
+SetFlowConfig ::= SEQUENCE(SIZE(0..32)) OF SEQUENCE {
+        flowId                  FlowIdentifier,		            -- identifier for the specific flow, selected by a requester
+        flowType                ENUMERATED { sps (1), event (2) },
+        pppp                    PPPP,                           -- user priority
+        serviceId               INTEGER OPTIONAL,               -- used for IPv6 UDP broadcast
+        spsReservationSize      SpsReservationSize OPTIONAL,    -- SPS reservation size bytes for the SPS flow creation
+        periodicity             TrafficPeriodicity-r14 OPTIONAL,-- reservation periodicity (SPS flow or Event)
+        txPower                 P-Max OPTIONAL,
+        harq                    BOOLEAN OPTIONAL,               -- Harq On (TRUE) - Off (FALSE)
+        txPoolId                INTEGER OPTIONAL,
+        -- txProfile also has pool frequency, 
+        -- check userPriority ... match dot3
+        ...
+}
 
-SetUeConfig ::= SEQUENCE {
-    earfcn                  EARFCN OPTIONAL,                -- channel
+SetUeConfig ::= SEQUENCE {  -- RRC parameters, all optional. Used for those chipset which don't support parameter loading via SendUeConfigXML
+    earfcn                  EARFCN OPTIONAL,                -- transmit pool frequency
     pMax                    P-Max OPTIONAL,                 -- Tx power
     bw                      SL-Bandwidth-r12 OPTIONAL,      -- bandwidth
-    minTrafficPeriodicity   TrafficPeriodicity-r14 OPTIONAL,-- repeat rate
     minMcs                  MCS OPTIONAL,                   -- modulation coding rate - min
     maxMcs                  MCS OPTIONAL,                   -- modulation coding rate - max
-	numSubCh				NumSubCh OPTIONAL,				-- number of subchannels
-	subChSize				SubChSize OPTIONAL,				-- subchannel size
-    rbSize                  RBSize OPTIONAL,                -- resource block size
-    pppp                    PPPP OPTIONAL,                  -- user priority
-    spsReservationSize      SpsReservationSize OPTIONAL,    -- SPS reservation size (if applicable) with any SPS flow creation
+    numSubCh                NumSubCh OPTIONAL,              -- number of subchannels
+    subChSize               SubChSize OPTIONAL,             -- subchannel size
     pdb                     PDB OPTIONAL,                   -- Packet delay budget i.e. Expiry Time
     ...
 }
 
 SendUeConfigXML ::= SEQUENCE {
-    counter     INTEGER (1..127),           -- index for the current segment
-    total       INTEGER (1..127),           -- total number of segments to be transferred
-    pdu         Opaque(SIZE(0..tciMtu)),    -- max Pdu for tci is set in TCI-Common as 1500
+    counter  INTEGER (1..127),           -- index for the current segment
+    total    INTEGER (1..127),           -- total number of segments to be transferred
+    crc      Opaque(SIZE(4)) OPTIONAL,   -- CRC32 checksum for the transmitted packet
+    pdu      Opaque(SIZE(0..tciMtu)),    -- max Pdu for tci is set in TCI-Common as 1500
     ...
 }
 
 StartWsmTx ::= SEQUENCE{  -- handled through WSM-WaveShortMessage.request
+    radio           RadioInterface,         -- enumerated radio interfaces (radio0, radio1, ... radio 3)
     psid            Psid,
-    radio           RadioInterface,
-    repeatRate      RepeatRate, -- when set to 0 - one shot message, otherwise periodic with RepeatRate per 1609.3
-    -- 20ms 50, 100, 200, .. 1000ms, (250, 50, 25, ... 5).
-    payload         Opaque(SIZE(0..pc5Mtu)) OPTIONAL,
+    flowId          INTEGER,                -- flowID matching one of the SetFlowConfig.flowId
+    repeatInterval  RepeatRate,             -- repeatInterval >= reserved flow periodicity via SetFlowConfig.periodicity
+                                            -- when set to 0 - one shot message, otherwise periodic with RepeatRate per 1609.3
+                                            -- 20ms 50, 100, 200, .. 1000ms, (250, 50, 25, ... 5).
+    packetCount     INTEGER (0..65534),     -- 0 - continuous, if > 0 count of messages to be transmitted by DUT
+    payload         Opaque(SIZE(0..ltev2xMtu)) OPTIONAL,
     ...
 }
 
 Pc5StartWsmRx ::= StartWsmRx (WITH COMPONENTS {
     psid OPTIONAL,
     radio,
+	channelIdentifier ABSENT,
+    timeSlot ABSENT,
     eventHandling,
     destinationMACAddr OPTIONAL, 
-    pduFilter OPTIONAL
+    pduFilter OPTIONAL,
+	ssp OPTIONAL
 })
+
 
 Pc5AddUserService ::= AddUserService (WITH COMPONENTS {
     psid,
@@ -237,6 +299,7 @@ Pc5AddUserService ::= AddUserService (WITH COMPONENTS {
     channelAccess ABSENT,
     eventHandling
 })
+-- should ssp to be included into Pc5AddUserService
 
 /*
    Indication Messages
@@ -278,6 +341,7 @@ Pc5ResponseInfo ::= ResponseInfo (WITH COMPONENTS {
 
 --- PC5 types
 
+FlowIdentifier::= INTEGER (0..65535)
 BandwidthPC5  ::= INTEGER (0..255)    --
 EARFCN        ::= ARFCN-ValueEUTRA-r9 -- channel number
 MCS           ::= INTEGER(0..31)      -- Modulation & Coding scheme
@@ -285,14 +349,8 @@ PPPP          ::= SL-Priority-r13
 RBSize        ::= ENUMERATED {n6, n15, n25, n50, n75, n100}
 RBCount       ::= INTEGER(0..65535)
 
-NumSubCh					::= INTEGER
-SubChSize					::= INTEGER
-FlowIdentifier 				::= INTEGER
-TxPoolId					::= ENUMERATED {
-            sps1  (1),
-			sps2  (2),
-			event (3)
-}
+NumSubCh                    ::= INTEGER
+SubChSize                   ::= INTEGER
 
 -- following defintions come from EUTRA-RRC-DEFINITIONS.asn
 
@@ -305,7 +363,7 @@ P-Max                       ::= INTEGER (-30..33)
 SL-Priority-r13             ::= INTEGER (1..8)
 SL-TxPoolIdentity-r12       ::= INTEGER (1.. maxSL-TxPool-r12)
 PDB                         ::= INTEGER (0..1023)
-SpsReservationSize          ::= INTEGER (0..pc5Mtu)
+SpsReservationSize          ::= INTEGER (0..ltev2xMtu)
 TrafficPeriodicity-r14      ::= ENUMERATED {
     sf20, sf50, sf100, sf200, sf300, sf400, sf500,
     sf600, sf700, sf800, sf900, sf1000}
