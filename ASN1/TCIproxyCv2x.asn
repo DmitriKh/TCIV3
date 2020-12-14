@@ -84,42 +84,42 @@ Typical Sequence for Udp Proxy configuration (tx / rx):
 
 
 StartUdpProxyTx ::= SEQUENCE {    -- configures UDP proxy outbound direction (UDP to radio)
-    port  IpPort,                 -- UDP IPv4 port used to forwarded PDUs via LTE-V2X radio interface
-                                  -- For WSMP, payload must include |Non-IP Type Header|WSMP Packet| see Fig M.6 IEEE 1609.3
-                                  -- For IP, payload must include |IP packet| see Fig M.7 IEEE 1609.3
-                                  -- IPv4 TOS or IPv6 Traffic Class byte will map to pppp (0-0,1-1...7-7)
-    radio    RadioInterface,
-    flowId   FlowIdentifier OPTIONAL,
-    pc5Mtu   INTEGER(0..65535) DEFAULT ltev2xMtu,
-    ...
+   port  IpPort,                 -- UDP port used to forwarded PDUs via LTE-V2X radio interface
+                                 -- For WSMP, payload must include |Non-IP Type Header|WSMP Packet| see Fig M.6 IEEE 1609.3
+                                 -- For IP, payload must include |IP packet| see Fig M.7 IEEE 1609.3
+                                 -- IPv4 TOS or IPv6 Traffic Class byte will map to pppp (0-0,1-1...7-7)
+   radio    RadioInterface,
+   flowId   FlowIdentifier OPTIONAL,
+   pc5Mtu   INTEGER(0..65535) DEFAULT ltev2xMtu,
+   ...
 }
 
 StartUdpProxyRx ::= SEQUENCE {   -- configures UDP proxy inbound direction (radio to UDP)
-    destAddress IpAddress,        -- UDP IPv4 address of the remote host to receive forwarded PDUs from LTE-V2X radio interface
-    destPort    IpPort,           -- UDP IPv4 port on remote host to receive forwarded payload from LTE-V2X radio interface
-                                  -- Payload PDU to be formatted using PCAP with optional radio-tap header
-                                  -- For WSMP, payload must include |Non-IP Type Header|WSMP Packet| see Fig M.6 IEEE 1609.3
-                                  -- For IP, payload must include |IP packet| see Fig M.7 IEEE 1609.3
-                                  -- IPv4 TOS or IPv6 Traffic Class byte will map to pppp (0-0,1-1...7-7)
-    radio    RadioInterface,
-    flowId   FlowIdentifier OPTIONAL,
-    pc5Mtu   INTEGER(0..65535) DEFAULT ltev2xMtu,
-    proto    ENUMERATED {
-                pcap (0)       -- to be specified by OmniAir (pcap)
-             },
-    options  BIT STRING   {       -- if omitted, assume all bits set to 0
-                 radiotap   (0)   -- if set, include radiotap header
-             } OPTIONAL,
-    ...
+   destAddress IpAddress,        -- UDP address of the remote host to receive forwarded PDUs from LTE-V2X radio interface
+   destPort    IpPort,           -- UDP port on remote host to receive forwarded payload from LTE-V2X radio interface
+                                 -- Payload PDU to be formatted using PCAP with optional radio-tap header
+                                 -- For WSMP, payload must include |Non-IP Type Header|WSMP Packet| see Fig M.6 IEEE 1609.3
+                                 -- For IP, payload must include |IP packet| see Fig M.7 IEEE 1609.3
+                                 -- IPv4 TOS or IPv6 Traffic Class byte will map to pppp (0-0,1-1...7-7)
+   radio    RadioInterface,
+   flowId   FlowIdentifier OPTIONAL,
+   pc5Mtu   INTEGER(0..65535) DEFAULT ltev2xMtu,
+   proto    ENUMERATED {
+               pcap (0)       -- to be specified by OmniAir (pcap)
+            },
+   options  BIT STRING   {       -- if omitted, assume all bits set to 0
+                radiotap   (0)   -- if set, include radiotap header
+            } OPTIONAL,
+   ...
 }
 
 StopUdpProxy ::= SEQUENCE {
-    direction    ENUMERATED {
+   direction    ENUMERATED {
                  tx (0),
                  rx (1)
              },
-    port    IpPort,
-    destAddress IpAddress OPTIONAL,   -- UDP IPv4 address of the remote host
+   port        IpPort,               -- Tx port of the proxy or Rx destPort
+   destAddress IpAddress OPTIONAL,   -- IP address of the remote host
     ...
 }
 
@@ -132,7 +132,6 @@ PC5ProxyResponseInfo ::= ResponseInfo (WITH COMPONENTS {
     resultCode,
     info (
       WITH COMPONENTS {atCmdInfo} |
-      WITH COMPONENTS {pktCount} |
       WITH COMPONENTS {sutStatus} ) OPTIONAL, -- if exception reported, no InfoContent provided
     exception OPTIONAL
     })
