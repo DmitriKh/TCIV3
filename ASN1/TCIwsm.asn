@@ -119,7 +119,8 @@ StartWsaTxPerdiodic ::= SEQUENCE{   -- creates WSA with one or more PSIDs via WM
     userPriority            UserPriority OPTIONAL,
     transmitPowerLevel      TXpower80211 OPTIONAL,
     ...,
-    headerExts              SrvAdvMsgHeaderExts OPTIONAL
+    headerExts              SrvAdvMsgHeaderExts OPTIONAL,
+    flowId          		INTEGER OPTIONAL       -- used for C-V2X
 }
 
 StopWsaTxPeriodic ::= SEQUENCE{ -- stops WSA and deletes all associated provider services

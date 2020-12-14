@@ -1,10 +1,11 @@
---<OSS.PDU TCI-MsgDispatcher.TCIMessage>--
+--<OSS.PDU TCI-Dispatcher.TCIMsg>--
 TCI-Dispatcher
 DEFINITIONS AUTOMATIC TAGS ::=
 BEGIN
 
 IMPORTS
 
+TCIPROXYCV2X        FROM TCI-CV2X-PROXY
 TCI16093DSRC        FROM TCI-16093-DSRC
 TCI16093PC5         FROM TCI-16093-PC5
 TCI16094            FROM TCI-16094
@@ -30,8 +31,9 @@ Frame ::=CHOICE {
     d29451     [5] TCI29451,
     sutCtrl    [6] TCISutControl,
     ...,
-    d16093PC5  [7] TCI16093PC5,
-    d31611     [8] TCI31611
+    d16093cv2x [7] TCI16093PC5,
+    d31611     [8] TCI31611,
+    proxyCv2x  [16] TCIPROXYCV2X
 }
 
 

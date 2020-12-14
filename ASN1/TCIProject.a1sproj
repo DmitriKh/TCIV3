@@ -16,6 +16,7 @@
   <File>1609dot3/wsa.asn</File>
   <File>TCI16093DSRC.asn</File>
   <File>TCI16093PC5.asn</File>
+  <File>TCIproxyCv2x.asn</File>
   <File>1609dot3/EUTRA-RRC-Definitions.asn</File>
   <File>1609dot3/EUTRA-Sidelink-Preconf.asn</File>
   <File>TCI31611.asn</File>

@@ -102,8 +102,6 @@ Time64 ::= INTEGER (0..9223372036854775807)
 -- due to ASN.1 limitation in OSS, the highest bit is set to 0
 
 Psid ::= VarLengthNumber
---IpAddress ::= UTF8String(SIZE(2..255)) ---- text string containing IPv6 (or IPv4 or hostname). Used as a parameter in WSA, IPv6 configuration, etc
---IpPort ::= INTEGER(0..65535)      ---- UDP port used in WSA, in SetInitialState
 
 --RepeatRate ::= INTEGER (0..255) // Number of messages transmitted per 5sec interval; if set to 0, transmit message one time only
 RepeatRate ::= INTEGER ( -- Number of messages transmitted per 5sec interval per dot3; mapping to MinimumTrafficPeriodicity for PC5

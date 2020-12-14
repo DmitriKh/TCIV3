@@ -168,7 +168,8 @@ Dot3StartWsaTxPerdiodic ::= StartWsaTxPerdiodic (WITH COMPONENTS {
     dataRate OPTIONAL,
     userPriority OPTIONAL,
     transmitPowerLevel OPTIONAL,
-    headerExts OPTIONAL
+    headerExts OPTIONAL,
+    flowId ABSENT
 })
 
 /*

@@ -23,7 +23,7 @@ RxFlag ::= BIT STRING {
 }
 
 EventFlag ::= BIT STRING {
-    e80211PktRx                     (0),    -- set 1 to be notified when inbound 802.11 frame is received by SUT
+    eRadioPktRx                     (0),    -- set 1 to be notified when inbound 802.11 or LTE-V2X frame is received by SUT
     e16093PktRx                     (1),    -- set 1 to be notified when inbound 1603 frame received SUT
     eWSM                            (2),    -- set 1 to be notified when WSM received (after PSID _AND_ pduFilter match (if present))
     eIpv6PktRx                      (3),    -- set 1 to be notified when inbound IPv6 frame received by SUT
@@ -44,9 +44,9 @@ SecurityFlag ::= BIT STRING {
 
 EventParamsChoice ::= ENUMERATED {
       service           (0),
-      wsm               (1),     --used for DSCR and PC5
+      wsm               (1),
       ip                (2),
-      d80211frame       (3),
+      radioframe        (3),     --used for 802.11 or LTE-V2X radio PDU frames
       security          (4)
 }
 
